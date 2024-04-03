@@ -40,8 +40,8 @@ cd devicescope/
 **Step 2:** Create and activate a `conda` environment and install the dependencies.
 
 ```(bash)
-conda create -n wichdevice python=3.8
-conda activate wichdevice
+conda create -n devicescope python=3.8
+conda activate devicescope
 pip install -r requirements.txt
 ```
 
