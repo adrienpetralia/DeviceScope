@@ -33,8 +33,8 @@ The application facilitate the understanding of electrical consumption patterns 
 **Step 1:** Clone this repository using `git` and change into its root directory.
 
 ```(bash)
-git clone https://github.com/boniolp/wichdevice.git
-cd whichdevice/
+git clone https://github.com/adrienpetralia/devicescope.git
+cd devicescope/
 ```
 
 **Step 2:** Create and activate a `conda` environment and install the dependencies.
@@ -47,7 +47,7 @@ pip install -r requirements.txt
 
 **Step 3:** You can use our tool in two different ways: 
 
-- Access online: https://wichdevice.streamlit.app/
+- Access online: https://devicescope.streamlit.app/
 - Run locally (preferable for faster interaction). To do so, run the following command:
 
 ```(bash)
