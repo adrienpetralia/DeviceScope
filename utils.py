@@ -59,7 +59,7 @@ def run_playground_frame():
     
     with col2_1:
         appliances1 = st.multiselect(
-            "Choose devices:", devices_list, ["Dishwasher", "WashingMachine", "Kettle", "Microwave"]
+            "Choose devices:", devices_list, ["Kettle"]
         )
     with col2_2:
         models = st.multiselect(
