@@ -283,14 +283,17 @@ def plot_benchmark_figures3(name_measure, dataset):
     
     table = table[['SamplingRate', 'Models']+[measure]].groupby(['SamplingRate', 'Models'], as_index=False).mean()
 
-    sampling_order = ['30s', '1T', '10T']  # Define the logical order
+    table.replace('1T', '1min', inplace=True)
+    table.replace('10T', '10min', inplace=True)
+
+    sampling_order = ['30s', '1min', '10min']  # Define the logical order
     table['SamplingRate_order'] = pd.Categorical(table['SamplingRate'], categories=sampling_order, ordered=True)
 
     table = table.sort_values(['SamplingRate_order', 'Models'])
 
     table['SamplingRate'] = table['SamplingRate'].astype('category')
 
-    dict_color_sp = {'30s': 'rgb(211, 211, 211)', '1T': 'rgb(128, 128, 128)', '10T': 'black'}
+    dict_color_sp = {'30s': 'rgb(211, 211, 211)', '1min': 'rgb(128, 128, 128)', '10min': 'black'}
 
     min_val = table[measure].values.flatten().min()
 
@@ -309,6 +312,8 @@ def plot_benchmark_figures3(name_measure, dataset):
 
 def plot_benchmark_figures4(appliances, measure, dataset):
     df = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
+    df.replace('1T', '1min', inplace=True)
+    df.replace('10T', '10min', inplace=True)
     sampling_rates = df['SamplingRate'].unique()
 
     if dataset != 'All':
