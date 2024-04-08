@@ -19,6 +19,7 @@
 
 DeviceScope is a Python-based web interactive tool that enables to understand better smart meters time series data.
 The application facilitate the understanding of electrical consumption patterns by identifying and localizing individual appliance usage within electrical consumption data.
+Our approach is trained only on the knowledge of the existence of an appliance in a household (weakly supervised learning) and enables the detection and localization of individual appliance patterns within a given time period.
 
 
 ## Contributors
