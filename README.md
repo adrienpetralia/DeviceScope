@@ -13,7 +13,7 @@
 
 <p align="center"><a href="https://devicescope.streamlit.app/">Try our demo</a></p>
 <p align="center">
-<img width="500" src="./Figures/deviceScope_demo.gif"/>
+<img width="400" src="./Figures/deviceScope_demo.gif"/>
 </p>
 
 
