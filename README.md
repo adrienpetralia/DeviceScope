@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">DeviceScope</h1>
 
-<h2 align="center">An interactive tool to browse, detect and localize appliance patterns in electrical consumption time series</h2>
+<h2 align="center">An interactive tool to browse, detect and localize appliance patterns in electricity consumption time series</h2>
 
 <div align="center">
 <p>
