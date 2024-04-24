@@ -30,7 +30,7 @@ def run():
 
     st.markdown(
         """
-        Welcome to DeviceScope! :mag: :zap: This app provides an analytical tool to browse, detect and localize appliance patterns in electrical smart meter consumption series.
+        Welcome to DeviceScope! :mag: :zap: This app provides an analytical tool to browse, detect and localize appliance patterns in electricity consumption time series.
         """
     )
 
