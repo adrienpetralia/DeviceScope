@@ -42,7 +42,7 @@ The model employs Inception modules composed of concatenated 1D convolutional la
 The outputs are passed through activation and normalization layers; at the end, classification is performed using a global average pooling, followed by a linear layer and softmax activation function.
 
 
-- TransApp: A recent study proposed TransApp, a deep-learning time series classifier specially designed to detect appliances in electrical consumption series.
+- TransApp: A recent study proposed TransApp, a deep-learning time series classifier specially designed to detect appliances in smart meter consumption series.
 The architecture results in an embedding block made of convolutional layers that serves as a features extractor followed by multiple Transformer layers.
 In the end, global average pooling, followed by a linear layer and softmax activation function, performs the classification.
 As the architecture was originally proposed for detecting appliances in large datasets, we adapted it for our system as a smaller and simplified version by keeping only one Transformer layer after the embedding block.
@@ -77,7 +77,7 @@ where a softmax activation function is applied on the product of $F$, the inner 
 It results in a univariate time series where each value reflects the importance given by the self-attention to each timestamp $t \in [1, T ]$."""
 
 text_about = f"""
-## Interactive detection and localization of appliance patterns in electrical consumption time series
+## Interactive detection and localization of appliance patterns in electricity consumption time series
 
 Electricity suppliers have installed millions of smart meters worldwide to improve the management of the smart grid system.
 These meters capture detailed time-stamped electricity consumption of the total main power consumed in a house: this recorded signal is hard to analyze as it regroups multiple appliance signatures that run simultaneously.
