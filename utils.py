@@ -472,6 +472,7 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
 
     list_best_resnets = dict_results['ListBestResNets']
 
+    current_win = current_win / 1000
     soft_label = np.zeros_like(current_win)
     
     prob_detect = 0
