@@ -464,7 +464,7 @@ def get_resnet_layers(resnet_name, resnet_inst):
     return last_conv_layer, fc_layer_name
 
 def get_soft_label_ensemble(current_win, path_ensemble_clf):
-    resnet_name = 'ResNet3'
+    resnet_type = 'ResNet3'
     device = 'cpu'
 
     with open(f'{path_ensemble_clf}LogResNetsEnsemble.pkl', 'rb') as handle:
@@ -478,7 +478,7 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
 
     # Loop on BestResNets 
     for resnet_name in list_best_resnets:
-        resnet_inst = get_resnet_instance(resnet_name, dict_results[resnet_name]['kernel_size'])
+        resnet_inst = get_resnet_instance(resnet_type, dict_results[resnet_name]['kernel_size'])
         #resnet_inst.to(device)
 
         if os.path.exists(f'{path_ensemble_clf}{resnet_name}.xz'):
