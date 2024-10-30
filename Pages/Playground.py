@@ -105,4 +105,4 @@ else:
 
     all_appliances = ['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle', 'Shower']
     fig_sig = plot_signatures(all_appliances)
-
+    st.plotly_chart(fig_sig, use_container_width=True)
