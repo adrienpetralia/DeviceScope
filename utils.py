@@ -743,7 +743,7 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         if appl=='WashingMachine' or appl=='Dishwasher':
             w=30
         else:
-            w=3
+            w=15
         stacked_cam = np.convolve(stacked_cam, np.ones(w), 'same') / w
     
         # Stacked CAM
