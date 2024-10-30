@@ -937,7 +937,7 @@ def plot_cam(k, df, window_size, appliances, pred_dict_all):
 
         for model_name, values in pred_dict_appl.items():
             if values['pred_cam'] is not None:
-                cam = np.clip(values['pred_cam'], a_min=0, a_max=None) * values['pred_label']
+                cam = np.clip(values['pred_cam'], a_min=0, a_max=None) #* values['pred_label']
 
                 show_legend = model_name not in added_models  # Show legend only if model hasn't been added
                 added_models.add(model_name)  # Mark model as added
