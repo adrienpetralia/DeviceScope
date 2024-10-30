@@ -13,16 +13,14 @@ from utils import *
 # Specify what pages should be shown in the sidebar
 show_pages(
 	[
-		Page("Hello.py", "DeviceScope", ":book:"),  # Home emoji is correct
-		Page("Pages/Playground.py", "Playground", ":zap:"),  # Changed from :books: to a book emoji
+		Page("Hello.py", "DeviceScope", ":zap:"),  # Home emoji is correct
+		Page("Pages/Playground.py", "Playground", ":control_knobs:"),  # Changed from :books: to a book emoji
 		Page("Pages/Benchmark.py", "Benchmark", ":bar_chart:"), 
 		Page("Pages/WhatsBehind.py", "What's behind", ":mag:"), 
 	]
 )
 
-add_page_title()
-
-st.write("# DeviceScope")
+st.write("# :zap: DeviceScope")
 
 st.markdown(
     """
@@ -31,8 +29,11 @@ st.markdown(
 )
 
 st.markdown(f"""
-            1. **Explore** electrical consumption series at different sampling rates.
-            2. **Detect** appliances in a period of time using the different trained classifiers and compare their performance.
-            3. **Localize** appliance patterns using explainable classification approaches (CAM/AttMap).
+            1. **Explore** electricity consumption series.
+            2. **Detect** and **Localize** appliances use in a period of time..
+            3. **Compare** the performance of our approach against other methods.
             """)
+
+
+st.markdown(text_info)
 
