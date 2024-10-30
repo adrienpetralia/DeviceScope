@@ -920,6 +920,8 @@ def plot_signatures(appliances, frequency):
 
     for i, appliance in enumerate(appliances, start=1):
         print(appliance)
+        if appliance == 'Shower':
+            appliance='Dishwasher'
         signature = pd.read_csv(os.getcwd()+f'/Data/example_{appliance}.gzip', parse_dates=['Time'], compression='gzip').set_index('Time')
         signature = signature.resample(sampling_rate).mean()
 
