@@ -18,6 +18,9 @@ Four houses were recorded for over a year and a half, while the 5th was recorded
 
 - [REFIT](https://pureportal.strath.ac.uk/en/datasets/refit-electrical-load-measurements-cleaned): The REFIT dataset contains data from 20 different houses in the United Kingdom that have been monitored with smart meters and multiple sensors. 
 This dataset provides aggregate and individual appliance load curves at 8-second sampling intervals. 
+
+- [IDEAL](https://www.nature.com/articles/s41597-021-00921-y): The IDEAL dataset contains data from 250 different houses in the United Kingdom that have been monitored with smart meters. 
+This dataset provides aggregate and individual appliance load curves at 8-second sampling intervals. 
 """
 
 text_description_model  = f"""
@@ -109,10 +112,11 @@ Work supported by EDF R&D and ANRT French program.
 
 
 # ========================== Lists ========================== #
-frequency_list = ['30 seconds', '1 minute','10 minutes']
-models_list    = ['ConvNet', 'ResNet', 'Inception', 'TransAppS']
 lengths_list   = ['6 hours', '12 hours', '1 Day']
-devices_list   = ['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle']
+
+devices_list_refit_ukdale = ['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle']
+devices_list_ideal        = ['WashingMachine', 'Dishwasher', 'Shower']
+
 measures_list  = ['Accuracy', 'Balanced Accuracy', 'F1 Macro']
 dataset_list   = ['All', 'UKDALE', 'REFIT']
 

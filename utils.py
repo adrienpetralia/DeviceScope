@@ -56,7 +56,7 @@ def run_playground_frame():
         )
     with col1_3:
         appliances1 = st.multiselect(
-            "Choose devices:", devices_list,
+            "Choose devices:", devices_list_ideal if 'IDEAL' in ts_name else devices_list_refit_ukdale,
         )
 
 
