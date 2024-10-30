@@ -739,12 +739,6 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         
         # Clip values and ensure it's an array with the same length as window_agg
         stacked_cam = np.clip(stacked_cam/k, a_min=0, a_max=None) if stacked_cam is not None else np.zeros(len(window_df['Aggregate']))
-
-        if appl=='WashingMachine' or appl=='Dishwasher':
-            w=30
-        else:
-            w=15
-        stacked_cam = np.convolve(stacked_cam, np.ones(w), 'same') / w
     
         # Stacked CAM
         fig_agg.add_trace(go.Scatter(x=window_df.index, y=stacked_cam, mode='lines', showlegend=False, name=appl.capitalize(), marker_color=dict_color_appliance[appl], fill='tozeroy'), row=1+z, col=1)
@@ -756,7 +750,13 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         color = dict_color_appliance[appl]  # Get color for the current appliance
         start_idx = None  # Start index of the active segment
 
-        threshold = np.mean(stacked_cam)
+        if appl=='WashingMachine' or appl=='Dishwasher':
+            w=30
+        else:
+            w=15
+        stacked_cam = np.convolve(stacked_cam, np.ones(w), 'same') / w
+
+        threshold = 0
 
         for i, value in enumerate(stacked_cam):
             if value > threshold and start_idx is None:  # CAM becomes active
