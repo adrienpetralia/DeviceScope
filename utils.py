@@ -44,7 +44,7 @@ def run_playground_frame():
     
     st.markdown(text_tab_playground)
 
-    col1_1, col1_2 = st.columns(2)
+    col1_1, col1_2, col1_3 = st.columns(3)
 
     with col1_1:
         ts_name = st.selectbox(
@@ -54,11 +54,7 @@ def run_playground_frame():
         length = st.selectbox(
             "Choose the window length:", lengths_list, index=2
         )
-
-
-    col2_1 = st.columns(1)
-    
-    with col2_1:
+    with col1_3:
         appliances1 = st.multiselect(
             "Choose devices:", devices_list,
         )
