@@ -9,8 +9,6 @@ import streamlit as st
 
 from utils import *
 from constants import *
-
-CURRENT_WINDOW=0
     
 st.markdown(text_tab_playground)
 
@@ -44,9 +42,9 @@ df, window_size = get_time_series_data(ts_name, length=length)
 n_win = len(df) // window_size
 
 if CURRENT_WINDOW > n_win:
-    CURRENT_WINDOW=n_win
-elif CURRENT_WINDOW < 0:
     CURRENT_WINDOW=0
+elif CURRENT_WINDOW < 0:
+    CURRENT_WINDOW=n_win
 
 with colcontrol_2:
     st.markdown("<p style='text-align: center;'> <b>from</b> <i>{}</i> <b>to</b> <i>{}</i> </p>".format(df.iloc[CURRENT_WINDOW*window_size: (CURRENT_WINDOW+1)*window_size].index[0],df.iloc[CURRENT_WINDOW*window_size: (CURRENT_WINDOW+1)*window_size].index[-1]),unsafe_allow_html=True)

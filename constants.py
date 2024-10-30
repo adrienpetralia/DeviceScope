@@ -1,3 +1,6 @@
+# Counter
+CURRENT_WINDOW=0
+
 # ========================== Texts ========================== #
 
 text_tab_playground = f"""
