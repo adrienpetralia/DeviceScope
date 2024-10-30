@@ -937,7 +937,7 @@ def plot_signatures(appliances, frequency):
                       showlegend=False,
                       height=400, 
                       margin=dict(l=100, r=30, t=70, b=40),
-                      yaxis_range=[0, 6000]
+                      yaxis_range=[0, 8000]
                     )
 
     return fig
