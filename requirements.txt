@@ -1,6 +1,7 @@
 altair
 pydeck
-streamlit
+st-pages==0.4.5
+streamlit==1.34.0
 numpy==1.26.4
 pandas
 matplotlib

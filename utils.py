@@ -1,15 +1,3 @@
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-import inspect
-import textwrap
 import streamlit as st
 
 # === Lib import === #
@@ -25,192 +13,14 @@ from plotly.subplots import make_subplots
 
 # === Customs import === #
 from constants import *
-from Models.FCN import FCN
-from Models.ResNet import ResNet
-from Models.InceptionTime import Inception
-from Models.TransAppS import TransAppS
+
 from Models.Classifiers.ResNet3 import ResNet3
 from Models.Classifiers.ResNet3LN import ResNet3LN
 from Models.Classifiers.ResNet5 import ResNet5
 from Models.Classifiers.ResNet5LN import ResNet5LN
 
-from Helpers.class_activation_map import CAM, AttentionMap
-
-CURRENT_WINDOW=0
-    
-def run_playground_frame():
-
-    global CURRENT_WINDOW
-    
-    st.markdown(text_tab_playground)
-
-    col1_1, col1_2, col1_3 = st.columns(3)
-
-    with col1_1:
-        ts_name = st.selectbox(
-            "Choose a load curve", list_name_ts, index=0
-        )
-    with col1_2:
-        length = st.selectbox(
-            "Choose the window length:", lengths_list, index=2
-        )
-    with col1_3:
-        appliances1 = st.multiselect(
-            "Choose devices:", devices_list_ideal if 'IDEAL' in ts_name else devices_list_refit_ukdale,
-        )
-
-
-    frequency = '1 minute'
-    models    = ['ResNetEnsemble']
-
-
-    if len(models)>0:
-        loc_toggle = st.toggle('Localize appliance patterns')
-
-    colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2,0.8,0.2])
-    with colcontrol_1:
-        if st.button(":rewind: **Prev.**", type="primary"):
-            CURRENT_WINDOW -= 1
-    with colcontrol_3:
-        if st.button("**Next** :fast_forward:", type="primary"):
-            CURRENT_WINDOW += 1
-    
-    df, window_size = get_time_series_data(ts_name, frequency=frequency, length=length)
-    n_win = len(df) // window_size
-
-    if CURRENT_WINDOW > n_win:
-        CURRENT_WINDOW=n_win
-    elif CURRENT_WINDOW < 0:
-        CURRENT_WINDOW=0
-
-    with colcontrol_2:
-        st.markdown("<p style='text-align: center;'> <b>from</b> <i>{}</i> <b>to</b> <i>{}</i> </p>".format(df.iloc[CURRENT_WINDOW*window_size: (CURRENT_WINDOW+1)*window_size].index[0],df.iloc[CURRENT_WINDOW*window_size: (CURRENT_WINDOW+1)*window_size].index[-1]),unsafe_allow_html=True)
+from Helpers.class_activation_map import CAM
         
-    if len(appliances1)>0:
-        if len(models)>0:
-            pred_dict_all = pred_one_window(CURRENT_WINDOW, df, window_size, ts_name, appliances1, frequency, models)
-            if loc_toggle:
-                fig_ts, fig_app, fig_stack = plot_one_window3(CURRENT_WINDOW,  df, window_size, appliances1, pred_dict_all)
-            else:
-                fig_ts, fig_app, fig_stack = plot_one_window2(CURRENT_WINDOW,  df, window_size, appliances1)
-                
-            fig_prob = plot_detection_probabilities(pred_dict_all)
-            
-            tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
-            
-            with tab_ts:
-                st.plotly_chart(fig_ts, use_container_width=True)
-            
-            with tab_app:
-                on = st.toggle('Stack')
-                if on:
-                    st.plotly_chart(fig_stack, use_container_width=True)
-                else:
-                    st.plotly_chart(fig_app, use_container_width=True)
-                    
-            if loc_toggle and len(models)>1:
-                st.markdown(f"""**Multiple classifiers are selected:** the plot show the average predicted location for each model.""")
-    
-            if loc_toggle:
-                tab_prob, tab_cam, tab_signatures = st.tabs(["Models detection probabilities", "Models patterns localization", "Examples of appliance patterns"])
-        
-                with tab_prob:
-                    st.plotly_chart(fig_prob, use_container_width=True)
-                    if len(models)>1:
-                        st.markdown(f"""**Mean Prediction** shows the average of predicted detection probabilities for selected models.""")
-                with tab_cam:
-                    fig_cam = plot_cam(CURRENT_WINDOW, df, window_size, appliances1, pred_dict_all)
-                    st.plotly_chart(fig_cam, use_container_width=True)
-                with tab_signatures:
-                    fig_sig = plot_signatures(appliances1, frequency)
-                    st.plotly_chart(fig_sig, use_container_width=True)
-            else:
-                tab_prob, tab_signatures = st.tabs(["Models detection probabilities", "Examples of appliance patterns"])
-        
-                with tab_prob:
-                    st.plotly_chart(fig_prob, use_container_width=True)
-                    if len(models)>1:
-                        st.markdown(f"""**Mean Prediction** shows the average of predicted detection probabilities for selected models.""")
-                with tab_signatures:
-                    fig_sig = plot_signatures(appliances1, frequency)
-                    st.plotly_chart(fig_sig, use_container_width=True)
-        else:
-            fig_ts, fig_app, fig_stack = plot_one_window2(CURRENT_WINDOW,  df, window_size, appliances1)
-    
-            tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
-    
-            with tab_ts:
-                st.plotly_chart(fig_ts, use_container_width=True)
-            
-            with tab_app:
-                on = st.toggle('Stack')
-                if on:
-                    st.plotly_chart(fig_stack, use_container_width=True)
-                else:
-                    st.plotly_chart(fig_app, use_container_width=True)
-            
-            fig_sig = plot_signatures(appliances1, frequency)
-    
-            st.plotly_chart(fig_sig, use_container_width=True)
-    else:
-        fig_ts = plot_one_window_agg(CURRENT_WINDOW,  df, window_size)
-        
-        st.plotly_chart(fig_ts, use_container_width=True)
-        
-            
-    
-
-def run_benchmark_frame():
-    st.markdown(text_tab_benchmark)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        measure = st.selectbox(
-            "Choose metric", measures_list, index=0
-        )
-    with col2:
-        dataset = st.selectbox(
-            "Choose dataset", dataset_list, index=0
-        )
-
-    #st.markdown("#### Overall results")
-
-    fig1 = plot_benchmark_figures1(measure, dataset)
-    fig2 = plot_benchmark_figures2(measure, dataset)
-    fig3 = plot_benchmark_figures3(measure, dataset)
-
-    st.plotly_chart(fig1, use_container_width=True)
-    st.plotly_chart(fig2, use_container_width=True)
-    st.plotly_chart(fig3, use_container_width=True)
-
-    #st.markdown("#### Explore the influence of the sampling rate on the detection performance for selected appliance(s).")
-
-    # appliances2 = st.multiselect(
-    #     "Select devices:", devices_list_refit_ukdale,
-    # )
-
-    # fig_benchmark = plot_benchmark_figures4(appliances2, measure, dataset)
-    # st.plotly_chart(fig_benchmark, use_container_width=True)
-    
-    
-
-def run_about_frame():
-
-    st.markdown(text_about)
-
-    st.image("Figures/DeviceScopePipelineGithub.png", caption="Proposed appliance detection pipeline.")
-    
-    with st.expander(f"""### Appliance detection as a time series classification problem"""):
-        st.markdown(text_description_model)
-
-    with st.expander(f"""### Explainable classification to localize appliance patterns"""):
-        st.write(text_description_explainability)
-
-    st.markdown("""### Smart meters datasets""")
-    st.markdown(text_description_dataset)
-
-    st.markdown(text_info)
 
 def plot_benchmark_figures1(name_measure, dataset):
     table = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
@@ -357,83 +167,37 @@ def plot_benchmark_figures4(appliances, measure, dataset):
     return fig
 
 
-def get_model_instance(model_name, win_size):
-    # Load instance according to selected model
-    if model_name=='ConvNet':
-        model_inst = FCN()
-    elif model_name=='ResNet':
-        model_inst = ResNet()
-    elif model_name=='Inception':
-        model_inst = Inception()
-    elif model_name=='TransAppS':
-        model_inst = TransAppS(c_in=1, window_size=win_size,  store_att=True)
-    else:
-        raise ValueError(f'Model {model_name} unknown.')
-
-    return model_inst
-
-
 def get_dataset_name(ts_name):
     # Get dataset_name according to choosen ts_name
     if 'UKDALE' in ts_name:
-        dataset_name = 'UKDALE'
+        return 'UKDALE'
     elif 'REFIT' in ts_name:
-        dataset_name = 'REFIT'
+        return 'REFIT'
     elif 'IDEAL' in ts_name:
-        dataset_name = 'IDEAL'
+        return 'IDEAL'
     else:
         raise ValueError('Wrong dataset name.')
-    
-    return dataset_name
 
 
-def convert_length_to_window_size(frequency, length):
-    # Dictionary to convert lengths to total minutes
+def convert_length_to_window_size(length):
     length_to_minutes = {
-        '6 hours': 6 * 60,
-        '12 hours': 12 * 60,
-        '1 Day': 24 * 60
+        '6 hours': 360,
+        '12 hours': 720,
+        '1 Day': 1440
     }
     
-    # Dictionary to convert frequency shorthand to total seconds
-    freq_to_seconds = {
-        '30s': 30,
-        '1min': 60,
-        '10min': 10 * 60
-    }
-    
-    # Convert length to minutes
     if length in length_to_minutes:
-        total_length_minutes = length_to_minutes[length]
+        return length_to_minutes[length]
     else:
         raise ValueError("Length not recognized. Please use '6 hours', '12 hours', or '1 Day'.")
     
-    # Convert frequency to seconds
-    if frequency in freq_to_seconds:
-        frequency_seconds = freq_to_seconds[frequency]
-    else:
-        raise ValueError("Frequency not recognized. Please use '30 seconds', '1 minute', or '10 minutes'.")
-    
-    # Calculate window size (total_length in seconds divided by frequency in seconds)
-    # Ensure to convert minutes to seconds for total length
-    window_size = (total_length_minutes * 60) / frequency_seconds
-    
-    return int(window_size)
-    
 
-def get_time_series_data(ts_name, frequency, length):
-    dict_freq   = {'30 seconds': '30s', '1 minute': '1min', '10 minutes': '10min'}
-    pd_freq     = dict_freq[frequency]
-
-    # Convert selected length to window_size according to choseen frequency
-    window_size = convert_length_to_window_size(pd_freq, length)
+def get_time_series_data(ts_name, length):
+    # Convert selected length to window_size
+    window_size = convert_length_to_window_size(length)
 
     # Load dataframe
     df = pd.read_csv(os.getcwd()+f'/Data/{ts_name}.gzip', compression='gzip', parse_dates=['Time']).set_index('Time')
-    
-    # Resample to choosen frequency (if > 30s)
-    # if pd_freq!='30s':
-    #    df = df.resample(pd_freq).mean()
 
     return df, window_size
 
@@ -542,33 +306,29 @@ def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
 
 
-def get_prediction_one_appliance(ts_name, window_agg, appliance, frequency, model_list):
-    dict_freq  = {'30 seconds': '30s', '1 minute': '1min', '10 minutes': '10T'}
-    dic_win    = {'30 seconds': 2880,  '1 minute': 1440, '10 minutes':  144}
-    sampling_rate = dict_freq[frequency]
+def get_prediction_one_appliance(ts_name, window_agg, appliance, model_list):
 
     pred_dict = {}
-        
     for model_name in model_list:
         if model_name=='ResNetEnsemble':
-            path_ensemble = os.getcwd()+f'/TrainedModels/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}/'
+            path_ensemble = os.getcwd()+f'/TrainedModels/{get_dataset_name(ts_name)}/1min/{appliance}/{model_name}/'
             pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
         else:
             print('Not implemented')
 
         # Update pred_dict
-        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_cam': soft_label}
+        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_status': soft_label, 'avg_cam': avg_cam}
 
     return pred_dict
 
 
-def pred_one_window(k, df, window_size, ts_name, appliances, frequency, models):
+def pred_one_window(k, df, window_size, ts_name, appliances, models):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
     window_agg = window_df['Aggregate']
 
     pred_dict_all = {}
     for appl in appliances:
-        pred_dict_appl      = get_prediction_one_appliance(ts_name, window_agg, appl, frequency, models)
+        pred_dict_appl      = get_prediction_one_appliance(ts_name, window_agg, appl, models)
         pred_dict_all[appl] = pred_dict_appl
 
     return pred_dict_all
@@ -679,7 +439,7 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         dict_pred = pred_dict_all[appl]
 
         k = 0
-        for name_model, dict_model in dict_pred.items():
+        for _, dict_model in dict_pred.items():
             if dict_model['pred_cam'] is not None:
                 tmp_cam = dict_model['pred_cam']
 
@@ -839,13 +599,6 @@ def plot_detection_probabilities(data):
         #ensemble_class_0_avg = np.mean(class_0_probs)
         ensemble_class_1_avg = np.mean(class_1_probs)
 
-        # Adding the ensemble model to the model list only if multiple selected models
-        if len(models)>1:
-            models.append('Mean Prediciton')
-            #class_0_probs.append(ensemble_class_0_avg)
-            class_1_probs.append(ensemble_class_1_avg)
-            color_model.append(dict_color_model['Ensemble'])
-
         # Add bars for each class in the subplot
         #fig.add_trace(go.Bar(x=models, y=class_0_probs, name='Class 0 Probability', marker_color='indianred'), row=1, col=i)
         fig.add_trace(go.Bar(x=models, y=class_1_probs,  marker_color=color_model), row=1, col=i)
@@ -861,7 +614,7 @@ def plot_detection_probabilities(data):
 
     # Update layout once, outside the loop
     fig.update_layout(
-        title_text='Probability of detection for each classifier',
+        title_text='Appliance(s) detection probabilities',
         barmode='group',
         showlegend=False,
         bargap=0.15, # gap between bars of adjacent location coordinates.
@@ -873,55 +626,15 @@ def plot_detection_probabilities(data):
     return fig
 
 
-def plot_cam(k, df, window_size, appliances, pred_dict_all):
-    window_df = df.iloc[k*window_size: k*window_size + window_size]
 
-    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'ResNetEnsemble': 'peachpuff'}
-
-    fig_cam = make_subplots(rows=len(appliances), cols=1, subplot_titles=[f'{appliance}' for appliance in appliances], shared_xaxes=True)
-
-    added_models = set()  # Track which models have been added to figure for legend purposes
-
-    for i, appliance in enumerate(appliances):
-        pred_dict_appl = pred_dict_all[appliance]
-
-        for model_name, values in pred_dict_appl.items():
-            if values['pred_cam'] is not None:
-                cam = np.clip(values['pred_cam'], a_min=0, a_max=None) #* values['pred_label']
-
-                show_legend = model_name not in added_models  # Show legend only if model hasn't been added
-                added_models.add(model_name)  # Mark model as added
-
-                fig_cam.add_trace(go.Scatter(x=window_df.index, y=cam, mode='lines', fill='tozeroy',
-                                             marker=dict(color=dict_color_model[model_name]),
-                                             name='AttMap TransAppS' if model_name=='TransAppS' else f'CAM {model_name}',
-                                             legendgroup=model_name,  # Assign legend group
-                                             showlegend=show_legend),
-                                  row=i+1, col=1)
-        
-        fig_cam.update_yaxes(range=[0, 1], row=i+1, col=1)
-
-    xaxis_title_dict = {f'xaxis{len(appliances)}_title': 'Time'}
-    fig_cam.update_layout(title='Detail of explainable pattern localization for each classifier', **xaxis_title_dict)
-    fig_cam.update_layout(legend=dict(orientation='h', x=0.5, xanchor='center', y=-0.3),
-                          height=500,
-                          width=1000,
-                          margin=dict(l=110, r=20, t=100, b=50))
-
-    return fig_cam
-
-
-
-def plot_signatures(appliances, frequency):
+def plot_signatures(appliances):
     fig = make_subplots(rows=1, cols=len(appliances), subplot_titles=[f'{appliance}' for appliance in appliances], shared_yaxes=True)
-    dict_freq  = {'30 seconds': '30s', '1 minute': '1min', '10 minutes': '10min'}
     dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
-    sampling_rate = dict_freq[frequency]
 
     for i, appliance in enumerate(appliances, start=1):
         print(appliance)
         signature = pd.read_csv(os.getcwd()+f'/Data/example_{appliance}.gzip', parse_dates=['Time'], compression='gzip').set_index('Time')
-        signature = signature.resample(sampling_rate).mean()
+        signature = signature.resample('1min').mean()
 
         fig.add_trace(go.Scatter(x=signature.index, y=signature[appliance], 
                                  marker_color=dict_color_appliance[appliance], 
