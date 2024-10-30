@@ -880,7 +880,7 @@ def plot_detection_probabilities(data):
     num_appliances = len(data)
     appliances = list(data.keys())
 
-    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff'}
+    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'ResNetEnsemble': 'peachpuff'}
 
     # Create subplots: one row, as many columns as there are appliances
     fig = make_subplots(rows=1, cols=num_appliances, subplot_titles=appliances, shared_yaxes=True)
@@ -889,7 +889,7 @@ def plot_detection_probabilities(data):
         appliance_data = data[appliance]
         models = list(appliance_data.keys())
         #class_0_probs = [appliance_data[model]['pred_prob'][0] for model in models]
-        class_1_probs = [appliance_data[model]['pred_prob'][1] for model in models]
+        class_1_probs = [appliance_data[model]['pred_prob'] for model in models]
         color_model   = [dict_color_model[model] for model in models]
 
         # Calculating the average probabilities for the ensemble model
@@ -933,7 +933,7 @@ def plot_detection_probabilities(data):
 def plot_cam(k, df, window_size, appliances, pred_dict_all):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
 
-    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff'}
+    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'ResNetEnsemble': 'peachpuff'}
 
     fig_cam = make_subplots(rows=len(appliances), cols=1, subplot_titles=[f'{appliance}' for appliance in appliances], shared_xaxes=True)
 
