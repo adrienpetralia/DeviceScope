@@ -515,7 +515,9 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
     
     # Majority voting: if appliance not detected in current win, soft label set to 0
     # if (y is not None) or ((prob_detect / len(list_best_resnets)) >= 0.5):
-    if (prob_detect / len(list_best_resnets)) >= 0.5:
+    prob_detect = prob_detect / len(list_best_resnets)
+
+    if prob_detect >= 0.5:
         soft_label = soft_label / len(list_best_resnets)
 
         # Small moving average 
@@ -576,7 +578,7 @@ def get_prediction_one_appliance(ts_name, window_agg, appliance, frequency, mode
             # pred_cam = get_cam(window_agg, model_name, model_inst, sampling_rate)
 
         # Update pred_dict
-        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_cam': soft_label}
+        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_cam': avg_cam}
 
     return pred_dict
 
