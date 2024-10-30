@@ -578,7 +578,7 @@ def get_prediction_one_appliance(ts_name, window_agg, appliance, frequency, mode
             # pred_cam = get_cam(window_agg, model_name, model_inst, sampling_rate)
 
         # Update pred_dict
-        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_cam': avg_cam}
+        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_cam': soft_label}
 
     return pred_dict
 
