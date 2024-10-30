@@ -526,7 +526,7 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
 
         # Sigmoid-Attention between input aggregate power and computed avg. CAM score
         soft_label = sigmoid(soft_label * current_win)
-        #soft_label = np.round(soft_label)
+        soft_label = np.round(soft_label)
     else: 
         soft_label = np.zeros_like(current_win)
         avg_cam    = np.zeros_like(current_win)
@@ -742,11 +742,9 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
 
         if appl=='WashingMachine' or appl=='Dishwasher':
             w=30
-        elif appl=='Kettle':
-            w=3
         else:
             w=3
-        #stacked_cam = np.convolve(stacked_cam, np.ones(w), 'same') / w
+        stacked_cam = np.convolve(stacked_cam, np.ones(w), 'same') / w
     
         # Stacked CAM
         fig_agg.add_trace(go.Scatter(x=window_df.index, y=stacked_cam, mode='lines', showlegend=False, name=appl.capitalize(), marker_color=dict_color_appliance[appl], fill='tozeroy'), row=1+z, col=1)
