@@ -547,7 +547,7 @@ def get_prediction_one_appliance(ts_name, window_agg, appliance, frequency, mode
         
     for model_name in model_list:
         if model_name=='ResNetEnsemble':
-            path_ensemble = os.getcwd()+f'/TrainedEnsemble/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}.pt.xz'
+            path_ensemble = os.getcwd()+f'/TrainedEnsemble/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}/'
             pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
         else:
             print('Not implemented')
