@@ -28,9 +28,11 @@ st.markdown(
     """
 )
 
+st.image("Figures/logo.png", caption="Appliance Localization.")
+
 st.markdown(f"""
             1. **Explore** electricity consumption series.
-            2. **Detect** and **Localize** appliances use in a period of time..
+            2. **Detect** and **Localize** appliances use in a period of time.
             3. **Compare** the performance of our approach against other methods.
             """)
 
