@@ -525,7 +525,7 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
         avg_cam    = np.copy(soft_label)
 
         # Sigmoid-Attention between input aggregate power and computed avg. CAM score
-        soft_label = sigmoid(soft_label * current_win)
+        soft_label = np.round(sigmoid(soft_label * current_win))
     else: 
         soft_label = np.zeros_like(current_win)
         avg_cam    = np.zeros_like(current_win)
