@@ -13,7 +13,7 @@ import textwrap
 import streamlit as st
 
 # === Lib import === #
-import os, lzma, io
+import os, lzma, io, pickle
 import numpy as np
 import pandas as pd
 import torch
@@ -29,6 +29,11 @@ from Models.FCN import FCN
 from Models.ResNet import ResNet
 from Models.InceptionTime import Inception
 from Models.TransAppS import TransAppS
+from Models.Classifiers.ResNet3 import ResNet3
+from Models.Classifiers.ResNet3LN import ResNet3LN
+from Models.Classifiers.ResNet5 import ResNet5
+from Models.Classifiers.ResNet5LN import ResNet5LN
+
 from Helpers.class_activation_map import CAM, AttentionMap
 
 CURRENT_WINDOW=0
@@ -39,34 +44,30 @@ def run_playground_frame():
     
     st.markdown(text_tab_playground)
 
-    col1_1, col1_2, col1_3 = st.columns(3)
+    col1_1, col1_2 = st.columns(2)
 
     with col1_1:
         ts_name = st.selectbox(
             "Choose a load curve", list_name_ts, index=0
         )
     with col1_2:
-        frequency = st.selectbox(
-            "Choose a sampling rate:", frequency_list, index=0
-        )
-    with col1_3:
         length = st.selectbox(
             "Choose the window length:", lengths_list, index=2
         )
 
 
-    col2_1, col2_2 = st.columns(2)
+    col2_1 = st.columns(2)
     
     with col2_1:
         appliances1 = st.multiselect(
             "Choose devices:", devices_list,
         )
-    with col2_2:
-        models = st.multiselect(
-            "Choose models:", models_list
-        )
 
-    
+
+    frequency = '1min'
+    models    = ['ResNetEnsemble']
+
+
     if len(models)>0:
         loc_toggle = st.toggle('Localize appliance patterns')
 
@@ -91,9 +92,8 @@ def run_playground_frame():
         
     if len(appliances1)>0:
         if len(models)>0:
-            pred_dict_all = pred_one_window(CURRENT_WINDOW, df, window_size, ts_name, appliances1, frequency, models)
+            pred_dict_all = pred_one_window(CURRENT_WINDOW, df, window_size, ts_name, appliances1, frequency)
             if loc_toggle:
-                #fig_ts, fig_app, fig_stack = plot_one_window1(CURRENT_WINDOW,  df, window_size, appliances1, pred_dict_all)
                 fig_ts, fig_app, fig_stack = plot_one_window3(CURRENT_WINDOW,  df, window_size, appliances1, pred_dict_all)
             else:
                 fig_ts, fig_app, fig_stack = plot_one_window2(CURRENT_WINDOW,  df, window_size, appliances1)
@@ -383,6 +383,8 @@ def get_dataset_name(ts_name):
         dataset_name = 'UKDALE'
     elif 'REFIT' in ts_name:
         dataset_name = 'REFIT'
+    elif 'IDEAL' in ts_name:
+        dataset_name = 'IDEAL'
     else:
         raise ValueError('Wrong dataset name.')
     
@@ -400,8 +402,8 @@ def convert_length_to_window_size(frequency, length):
     # Dictionary to convert frequency shorthand to total seconds
     freq_to_seconds = {
         '30s': 30,
-        '1T': 60,
-        '10T': 10 * 60
+        '1min': 60,
+        '10min': 10 * 60
     }
     
     # Convert length to minutes
@@ -424,7 +426,7 @@ def convert_length_to_window_size(frequency, length):
     
 
 def get_time_series_data(ts_name, frequency, length):
-    dict_freq   = {'30 seconds': '30s', '1 minute': '1T', '10 minutes': '10T'}
+    dict_freq   = {'30 seconds': '30s', '1 minute': '1min', '10 minutes': '10min'}
     pd_freq     = dict_freq[frequency]
 
     # Convert selected length to window_size according to choseen frequency
@@ -439,42 +441,145 @@ def get_time_series_data(ts_name, frequency, length):
 
     return df, window_size
 
+def get_resnet_instance(resnet_name, kernel_size, **kwargs):
+    if resnet_name =='ResNet3':
+        inst = ResNet3(kernel_sizes=[kernel_size, 7, 3], **kwargs)
+    elif resnet_name =='ResNet3LN':
+        inst = ResNet3LN(kernel_sizes=[kernel_size, 7, 3], **kwargs)
+    elif resnet_name=='ResNet5':
+        inst = ResNet5(kernel_sizes=[kernel_size, 7, 3], **kwargs)
+    elif resnet_name =='ResNet5LN':
+        inst = ResNet5LN(kernel_sizes=[kernel_size, 7, 3], **kwargs)
+    else:
+        raise ValueError('ResNet name {} unknown'.format(resnet_name))
+
+    return inst
+
+def get_resnet_layers(resnet_name, resnet_inst):
+    if 'ResNet3' in resnet_name:
+        last_conv_layer = resnet_inst._modules['layers'][2]
+        fc_layer_name   = resnet_inst._modules['linear']
+    elif 'ResNet5' in resnet_name:
+        last_conv_layer = resnet_inst._modules['layers'][4]
+        fc_layer_name   = resnet_inst._modules['linear']
+    else:
+        raise ValueError('ResNet name {} unknown'.format(resnet_name))
+
+    return last_conv_layer, fc_layer_name
+
+def get_soft_label_ensemble(current_win, path_ensemble_clf):
+    resnet_name = 'ResNet3'
+    device = 'cpu'
+
+    with open(f'{path_ensemble_clf}LogResNetsEnsemble.pkl', 'rb') as handle:
+        dict_results = pickle.load(handle)
+
+    list_best_resnets = dict_results['ListBestResNets']
+
+    soft_label = np.zeros_like(current_win)
+    
+    prob_detect = 0
+
+    # Loop on BestResNets 
+    for resnet_name in list_best_resnets:
+        resnet_inst = get_resnet_instance(resnet_name, dict_results[resnet_name]['kernel_size'])
+        #resnet_inst.to(device)
+
+        if os.path.exists(f'{path_ensemble_clf}{resnet_name}.xz'):
+            path_model = f'{path_ensemble_clf}{resnet_name}.xz'
+            with lzma.open(path_model, 'rb') as file:
+                decompressed_file = file.read()
+            log = torch.load(io.BytesIO(decompressed_file), map_location=torch.device(device))
+            del decompressed_file
+        else:
+            raise ValueError(f'Provide folders {path_ensemble_clf} does not contain {resnet_name} clf.')
+
+        resnet_inst.load_state_dict(log['model_state_dict'])
+        resnet_inst.eval()
+        last_conv_layer, fc_layer_name = get_resnet_layers(resnet_name, resnet_inst)
+
+        CAM_builder = CAM(model=resnet_inst, device=device, 
+                          last_conv_layer=last_conv_layer, fc_layer_name=fc_layer_name)
+        cam, y_pred, proba = CAM_builder.run(instance=current_win, returned_cam_for_label=1)
+        prob_detect += proba[1]
+
+        if y_pred>0:
+            # Clip CAM and MaxNormalization (between 0 and 1)
+            clip_cam = np.nan_to_num(np.clip(cam, a_min=0, a_max=None).astype(np.float16), nan=0.0, neginf=0.0, posinf=0.0)
+
+            if clip_cam.max()>0:
+                clip_cam = clip_cam / clip_cam.max()
+            else:
+                clip_cam = np.zeros_like(clip_cam)
+
+            soft_label = soft_label + clip_cam.ravel()
+
+        del resnet_inst
+    
+    # Majority voting: if appliance not detected in current win, soft label set to 0
+    # if (y is not None) or ((prob_detect / len(list_best_resnets)) >= 0.5):
+    if (prob_detect / len(list_best_resnets)) >= 0.5:
+        soft_label = soft_label / len(list_best_resnets)
+
+        # Small moving average 
+        soft_label = moving_average(soft_label, w=5) # TODO: improve the hardcoding of Moving Average w parameter
+        avg_cam    = np.copy(soft_label)
+
+        # Sigmoid-Attention between input aggregate power and computed avg. CAM score
+        soft_label = sigmoid(soft_label * current_win)
+    else: 
+        soft_label = np.zeros_like(current_win)
+        avg_cam    = np.zeros_like(current_win)
+
+    return prob_detect, soft_label, avg_cam
+
+
+def sigmoid(z):
+    return 2 * (1.0/(1.0 + np.exp(-z))) - 1
+
+
+def moving_average(x, w):
+    return np.convolve(x, np.ones(w), 'same') / w
+
 
 def get_prediction_one_appliance(ts_name, window_agg, appliance, frequency, model_list):
-    dict_freq  = {'30 seconds': '30s', '1 minute': '1T', '10 minutes': '10T'}
+    dict_freq  = {'30 seconds': '30s', '1 minute': '1min', '10 minutes': '10T'}
     dic_win    = {'30 seconds': 2880,  '1 minute': 1440, '10 minutes':  144}
     sampling_rate = dict_freq[frequency]
-
-    window_agg  = torch.Tensor(window_agg).unsqueeze(0).unsqueeze(0)
 
     pred_dict = {}
         
     for model_name in model_list:
-        # Get model instance
-        model_inst = get_model_instance(model_name, dic_win[frequency])
-        # Load compressed model
-        path_model = os.getcwd()+f'/TrainedModels/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}.pt.xz'
-        # Decompress model
-        with lzma.open(path_model, 'rb') as file:
-            decompressed_file = file.read()
-        model_parameters = torch.load(io.BytesIO(decompressed_file), map_location='cpu')
-        del decompressed_file
-        # Load state dict
-        model_inst.load_state_dict(model_parameters['model_state_dict'])
-        del model_parameters
-        # Set model to eval mode
-        model_inst.eval()
+        if model_name=='ResNetEnsemble':
+            path_ensemble = os.getcwd()+f'/TrainedEnsemble/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}.pt.xz'
+            pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
+        else:
+            print('Not implemented')
+            # # Get model instance
+            # model_inst = get_model_instance(model_name, dic_win[frequency])
+            # # Load compressed model
+            # path_model = os.getcwd()+f'/TrainedModels/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}.pt.xz'
+            # # Decompress model
+            # with lzma.open(path_model, 'rb') as file:
+            #     decompressed_file = file.read()
+            # model_parameters = torch.load(io.BytesIO(decompressed_file), map_location='cpu')
+            # del decompressed_file
+            # # Load state dict
+            # model_inst.load_state_dict(model_parameters['model_state_dict'])
+            # del model_parameters
+            # # Set model to eval mode
+            # model_inst.eval()
 
-        # Predict proba and label
-        pred_prob  = torch.nn.Softmax(dim=-1)(model_inst(window_agg)).detach().numpy().flatten()
-        pred_label = np.argmax(pred_prob)
+            # # Predict proba and label
+            # pred_prob  = torch.nn.Softmax(dim=-1)(model_inst(window_agg)).detach().numpy().flatten()
+            # pred_label = np.argmax(pred_prob)
 
-        # Predict CAM or AttMap
-        #if model_name in ['ConvNet', 'ResNet', 'Inception']:
-        pred_cam = get_cam(window_agg, model_name, model_inst, sampling_rate)
+            # # Predict CAM or AttMap
+            # #if model_name in ['ConvNet', 'ResNet', 'Inception']:
+            # pred_cam = get_cam(window_agg, model_name, model_inst, sampling_rate)
 
         # Update pred_dict
-        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_label': pred_label, 'pred_cam': pred_cam}
+        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_cam': soft_label}
 
     return pred_dict
 
@@ -497,7 +602,7 @@ def get_cam(window_agg, model_name, model_inst, sampling_rate):
     if model_name=='TransAppS':
         CAM_builder = AttentionMap(model_inst, device='cpu', n_encoder_layers=n_encoder_layers, merge_channels_att='sum', head_att='sum')
         pred_cam, _ = CAM_builder.run(instance=window_agg, return_att_for='all')
-        dict_conv  = {'30s': 20, '1T': 10, '10T':5}
+        dict_conv  = {'30s': 20, '1min': 10, '10T':5}
         pred_cam = np.convolve(pred_cam, np.ones(dict_conv[sampling_rate]), mode='same')
         pred_cam = scale_cam_inst(pred_cam)
     else:
@@ -519,93 +624,6 @@ def pred_one_window(k, df, window_size, ts_name, appliances, frequency, models):
 
     return pred_dict_all
 
-
-def plot_one_window1(k, df, window_size, appliances, pred_dict_all):
-    window_df = df.iloc[k*window_size: k*window_size + window_size]
-    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Kettle': 'orange', 'Microwave': 'grey'}
-    
-    # Create subplots with 2 rows, shared x-axis
-    size_cam = 0.1 * (len(appliances)+1)
-
-    fig_agg          = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1, row_heights=[1-size_cam, size_cam])
-    fig_appl         = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1, row_heights=[1-size_cam, size_cam])
-    fig_appl_stacked = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1, row_heights=[1-size_cam, size_cam])
-    
-    # Aggregate plot
-    fig_agg.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], mode='lines', name='Aggregate', fill='tozeroy', line=dict(color='royalblue')),
-                  row=1, col=1)
-    
-    # Stacked CAM heatmap calculations
-    z = []
-    for appl in appliances:
-        fig_appl.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', name=appl.capitalize(), marker_color=dict_color_appliance[appl],  fill='tozeroy'))
-        fig_appl_stacked.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', line=dict(width=0), marker_color=dict_color_appliance[appl], name=appl.capitalize(), stackgroup='one'))
-
-        stacked_cam = None
-        dict_pred = pred_dict_all[appl]
-
-        k = 0
-        for name_model, dict_model in dict_pred.items():
-            if dict_model['pred_cam'] is not None:
-                # Aggregate CAMs from different models
-                if dict_model['pred_label'] < 1:
-                    if name_model == 'TransAppS':
-                        tmp_cam = dict_model['pred_cam'] * 0
-                    else:
-                        tmp_cam = dict_model['pred_cam'] * dict_model['pred_prob'][1]
-                else:
-                    tmp_cam = dict_model['pred_cam']
-
-                stacked_cam = stacked_cam + tmp_cam if stacked_cam is not None else tmp_cam
-                k += 1
-        
-        # Clip values and ensure it's an array with the same length as window_agg
-        stacked_cam = np.clip(stacked_cam/k, a_min=0, a_max=None) if stacked_cam is not None else np.zeros(len(window_df['Aggregate']))
-        z.append(stacked_cam)
-    
-    # Heatmap for stacked CAM
-    fig_agg.add_trace(go.Heatmap(z=z, x=window_df.index, y=appliances, colorscale='RdBu_r', showscale=False, zmin=0, zmax=1), row=2, col=1)
-    fig_appl.add_trace(go.Heatmap(z=z, x=window_df.index, y=appliances, colorscale='RdBu_r', showscale=False, zmin=0, zmax=1), row=2, col=1)
-    fig_appl_stacked.add_trace(go.Heatmap(z=z, x=window_df.index, y=appliances, colorscale='RdBu_r', showscale=False, zmin=0, zmax=1), row=2, col=1)
-    
-    # Update layout for the combined figure
-    fig_agg.update_layout(
-        title='Aggregate power consumption and predicted appliance localization',
-        xaxis2_title='Time',
-        height=500,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40)
-    )
-
-    fig_appl.update_layout(
-        title='Individual appliance power consumption compared to predicted appliance localization',
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=-0.2),
-        xaxis2_title='Time',
-        height=500,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40)
-    )
-
-    fig_appl_stacked.update_layout(
-        title='Individual appliance power consumption (stacked) compared to predicted appliance localization',
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=-0.2),
-        xaxis2_title='Time',
-        height=500,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40)
-    )
-    
-    # Update y-axis for the aggregate consumption plot
-    fig_agg.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-    fig_appl.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-    fig_appl_stacked.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-    
-    # Update y-axis for the heatmap
-    fig_agg.update_yaxes(tickmode='array', tickvals=list(appliances), ticktext=appliances, row=2, col=1, tickangle=-45)
-    fig_appl.update_yaxes(tickmode='array', tickvals=list(appliances), ticktext=appliances, row=2, col=1, tickangle=-45)
-    fig_appl_stacked.update_yaxes(tickmode='array', tickvals=list(appliances), ticktext=appliances, row=2, col=1, tickangle=-45)
-
-    return fig_agg, fig_appl, fig_appl_stacked
 
 
 def plot_one_window2(k, df, window_size, appliances):
@@ -967,7 +985,7 @@ def scale_cam_inst(arr):
 
 def plot_signatures(appliances, frequency):
     fig = make_subplots(rows=1, cols=len(appliances), subplot_titles=[f'{appliance}' for appliance in appliances], shared_yaxes=True)
-    dict_freq  = {'30 seconds': '30s', '1 minute': '1T', '10 minutes': '10T'}
+    dict_freq  = {'30 seconds': '30s', '1 minute': '1min', '10 minutes': '10min'}
     dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Kettle': 'orange', 'Microwave': 'grey'}
     sampling_rate = dict_freq[frequency]
 
