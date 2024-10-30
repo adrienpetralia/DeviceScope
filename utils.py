@@ -492,7 +492,7 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
 
         resnet_inst.load_state_dict(log['model_state_dict'])
         resnet_inst.eval()
-        last_conv_layer, fc_layer_name = get_resnet_layers(resnet_name, resnet_inst)
+        last_conv_layer, fc_layer_name = get_resnet_layers(resnet_type, resnet_inst)
 
         CAM_builder = CAM(model=resnet_inst, device=device, 
                           last_conv_layer=last_conv_layer, fc_layer_name=fc_layer_name)
