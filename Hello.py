@@ -13,9 +13,9 @@ from utils import *
 # Specify what pages should be shown in the sidebar
 show_pages(
 	[
-		Page("Hello.py", "DeviceScope", ":zap:"),  # Home emoji is correct
-		Page("Pages/Playground.py", "Playground", ":mag:"),  # Changed from :books: to a book emoji
-		Page("Pages/Benchmark.py", "Benchmark", ":mag:"), 
+		Page("Hello.py", "DeviceScope", ":book:"),  # Home emoji is correct
+		Page("Pages/Playground.py", "Playground", ":zap:"),  # Changed from :books: to a book emoji
+		Page("Pages/Benchmark.py", "Benchmark", ":bar_chart:"), 
 		Page("Pages/WhatsBehind.py", "What's behind", ":mag:"), 
 	]
 )
