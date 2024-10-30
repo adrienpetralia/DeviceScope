@@ -1,6 +1,6 @@
 altair
 pydeck
-st-pages==0.4.5
+st-pages==0.4.1
 streamlit==1.34.0
 numpy==1.26.4
 pandas
