@@ -432,8 +432,8 @@ def get_time_series_data(ts_name, frequency, length):
     df = pd.read_csv(os.getcwd()+f'/Data/{ts_name}.gzip', compression='gzip', parse_dates=['Time']).set_index('Time')
     
     # Resample to choosen frequency (if > 30s)
-    if pd_freq!='30s':
-        df = df.resample(pd_freq).mean()
+    # if pd_freq!='30s':
+    #    df = df.resample(pd_freq).mean()
 
     return df, window_size
 
@@ -551,66 +551,15 @@ def get_prediction_one_appliance(ts_name, window_agg, appliance, frequency, mode
         
     for model_name in model_list:
         if model_name=='ResNetEnsemble':
-            path_ensemble = os.getcwd()+f'/TrainedEns/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}/'
+            path_ensemble = os.getcwd()+f'/TrainedModels/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}/'
             pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
         else:
             print('Not implemented')
-            # # Get model instance
-            # model_inst = get_model_instance(model_name, dic_win[frequency])
-            # # Load compressed model
-            # path_model = os.getcwd()+f'/TrainedModels/{get_dataset_name(ts_name)}/{sampling_rate}/{appliance}/{model_name}.pt.xz'
-            # # Decompress model
-            # with lzma.open(path_model, 'rb') as file:
-            #     decompressed_file = file.read()
-            # model_parameters = torch.load(io.BytesIO(decompressed_file), map_location='cpu')
-            # del decompressed_file
-            # # Load state dict
-            # model_inst.load_state_dict(model_parameters['model_state_dict'])
-            # del model_parameters
-            # # Set model to eval mode
-            # model_inst.eval()
-
-            # # Predict proba and label
-            # pred_prob  = torch.nn.Softmax(dim=-1)(model_inst(window_agg)).detach().numpy().flatten()
-            # pred_label = np.argmax(pred_prob)
-
-            # # Predict CAM or AttMap
-            # #if model_name in ['ConvNet', 'ResNet', 'Inception']:
-            # pred_cam = get_cam(window_agg, model_name, model_inst, sampling_rate)
 
         # Update pred_dict
         pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_cam': soft_label}
 
     return pred_dict
-
-def get_cam(window_agg, model_name, model_inst, sampling_rate):
-
-    # Set layer conv and fc layer names for selected model
-    if model_name=='ConvNet':
-        last_conv_layer = model_inst._modules['layer3']
-        fc_layer_name   = model_inst._modules['linear']
-    elif model_name=='ResNet':
-        last_conv_layer = model_inst._modules['layers'][2]
-        fc_layer_name   = model_inst._modules['linear']
-    elif model_name=='Inception':
-        last_conv_layer = model_inst._modules['Blocks'][1]
-        fc_layer_name   = model_inst._modules['Linear']
-    elif model_name=='TransAppS':
-        n_encoder_layers = 1
-
-    # Get CAM for selected model and device
-    if model_name=='TransAppS':
-        CAM_builder = AttentionMap(model_inst, device='cpu', n_encoder_layers=n_encoder_layers, merge_channels_att='sum', head_att='sum')
-        pred_cam, _ = CAM_builder.run(instance=window_agg, return_att_for='all')
-        dict_conv  = {'30s': 20, '1min': 10, '10T':5}
-        pred_cam = np.convolve(pred_cam, np.ones(dict_conv[sampling_rate]), mode='same')
-        pred_cam = scale_cam_inst(pred_cam)
-    else:
-        CAM_builder = CAM(model_inst, device='cpu', last_conv_layer=last_conv_layer, fc_layer_name=fc_layer_name, verbose=False)
-        pred_cam, _ = CAM_builder.run(instance=window_agg, returned_cam_for_label=1)
-        pred_cam = scale_cam_inst(pred_cam)
-
-    return pred_cam
 
 
 def pred_one_window(k, df, window_size, ts_name, appliances, frequency, models):
@@ -960,16 +909,6 @@ def plot_cam(k, df, window_size, appliances, pred_dict_all):
                           margin=dict(l=110, r=20, t=100, b=50))
 
     return fig_cam
-
-    
-
-
-def scale_cam_inst(arr):
-    min_val = np.min(arr)
-    max_val = np.max(arr)
-    scaled_arr = 2 * (arr - min_val) / (max_val - min_val) - 1
-
-    return scaled_arr
 
 
 
