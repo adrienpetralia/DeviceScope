@@ -252,7 +252,7 @@ def plot_benchmark_figures2(name_measure, dataset):
 
     table['Appliance'] = table['Appliance'].astype('category')
 
-    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Kettle': 'orange', 'Microwave': 'grey'}
+    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
 
     min_val = table[measure].values.flatten().min()
     # Create the grouped bar plot
@@ -577,7 +577,7 @@ def pred_one_window(k, df, window_size, ts_name, appliances, frequency, models):
 
 def plot_one_window2(k, df, window_size, appliances):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
-    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Kettle': 'orange', 'Microwave': 'grey'}
+    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
 
     fig_agg          = go.Figure()
     fig_appl         = go.Figure()
@@ -650,7 +650,7 @@ def plot_one_window_agg(k, df, window_size):
 
 def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
-    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Kettle': 'orange', 'Microwave': 'grey'}
+    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
     
     # Create subplots with 2 rows, shared x-axis
     list_row_heights = [0.6] + [0.4/len(appliances) for _ in range(len(appliances))]
@@ -915,7 +915,7 @@ def plot_cam(k, df, window_size, appliances, pred_dict_all):
 def plot_signatures(appliances, frequency):
     fig = make_subplots(rows=1, cols=len(appliances), subplot_titles=[f'{appliance}' for appliance in appliances], shared_yaxes=True)
     dict_freq  = {'30 seconds': '30s', '1 minute': '1min', '10 minutes': '10min'}
-    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Kettle': 'orange', 'Microwave': 'grey'}
+    dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
     sampling_rate = dict_freq[frequency]
 
     for i, appliance in enumerate(appliances, start=1):
