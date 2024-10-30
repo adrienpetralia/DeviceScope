@@ -728,15 +728,7 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         k = 0
         for name_model, dict_model in dict_pred.items():
             if dict_model['pred_cam'] is not None:
-                # Aggregate CAMs from different models
-                if dict_model['pred_label'] < 1:
-                    tmp_cam = dict_model['pred_cam'] * 0
-                    #if name_model == 'TransAppS':
-                    #    tmp_cam = dict_model['pred_cam'] * 0
-                    #else:
-                    #    tmp_cam = dict_model['pred_cam'] * dict_model['pred_prob'][1]
-                else:
-                    tmp_cam = dict_model['pred_cam']
+                tmp_cam = dict_model['pred_cam']
 
                 stacked_cam = stacked_cam + tmp_cam if stacked_cam is not None else tmp_cam
                 k += 1
