@@ -186,12 +186,12 @@ def run_benchmark_frame():
 
     #st.markdown("#### Explore the influence of the sampling rate on the detection performance for selected appliance(s).")
 
-    appliances2 = st.multiselect(
-        "Select devices:", devices_list_refit_ukdale,
-    )
+    # appliances2 = st.multiselect(
+    #     "Select devices:", devices_list_refit_ukdale,
+    # )
 
-    fig_benchmark = plot_benchmark_figures4(appliances2, measure, dataset)
-    st.plotly_chart(fig_benchmark, use_container_width=True)
+    # fig_benchmark = plot_benchmark_figures4(appliances2, measure, dataset)
+    # st.plotly_chart(fig_benchmark, use_container_width=True)
     
     
 
