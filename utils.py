@@ -60,7 +60,7 @@ def run_playground_frame():
         )
 
 
-    frequency = '1min'
+    frequency = '1 Minute'
     models    = ['ResNetEnsemble']
 
 
