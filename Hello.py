@@ -15,8 +15,8 @@ show_pages(
 	[
 		Page("Hello.py", "DeviceScope", ":zap:"),  # Home emoji is correct
 		Page("Pages/Playground.py", "Playground", ":mag:"),  # Changed from :books: to a book emoji
-		Page("pages/Benchmark.py", "Benchmark", ":mag:"), 
-		Page("pages/WhatsBehind.py", "What's behind", ":mag:"), 
+		Page("Pages/Benchmark.py", "Benchmark", ":mag:"), 
+		Page("Pages/WhatsBehind.py", "What's behind", ":mag:"), 
 	]
 )
 
