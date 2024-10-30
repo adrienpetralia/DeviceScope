@@ -56,7 +56,7 @@ def run_playground_frame():
         )
 
 
-    col2_1 = st.columns(2)
+    col2_1 = st.columns(1)
     
     with col2_1:
         appliances1 = st.multiselect(
