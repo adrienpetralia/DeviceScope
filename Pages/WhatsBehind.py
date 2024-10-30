@@ -23,5 +23,3 @@ with st.expander(f"""### Explainable classification to localize appliance patter
 st.markdown("""### Smart meters datasets""")
 st.markdown(text_description_dataset)
 
-st.markdown(text_info)
-

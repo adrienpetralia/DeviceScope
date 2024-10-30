@@ -1,11 +1,11 @@
 # ========================== Texts ========================== #
 
 text_tab_playground = f"""
-### Playground
+# Playground
 Attempt to identify the selected appliances in the aggregate power by looking at the provided example patterns at the bottom of the frame or choose a classifier to detect and localize them automatically."""
 
 text_tab_benchmark = f"""
-### Benchmark
+# Benchmark
 Compare the performance of the classifiers applied to detecting appliances and see the influence of the sampling rate on the detection score."""
 
 
