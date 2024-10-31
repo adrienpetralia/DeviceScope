@@ -9,10 +9,13 @@ import streamlit as st
 from constants import *
 
 from utils import *
+from constants import *
 
+
+st.markdown(text_tab_benchmark)
 
 tab_playground, tab_benchmark, tab_about = st.tabs(
-        ["Playground", "Benchmark", "About"]
+        ["Metrics Comparaison", "Visual Comparaison"]
     )
     
 with tab_playground:

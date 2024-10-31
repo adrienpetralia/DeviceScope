@@ -23,7 +23,6 @@ from Helpers.class_activation_map import CAM
         
 
 def run_metric_frame():
-    st.markdown(text_tab_benchmark)
 
     col1, col2 = st.columns(2)
 
@@ -59,7 +58,7 @@ def run_metric_frame():
 def run_nilmmodel_frame():
      st.markdown("To")
 
-     
+
 
 def plot_benchmark_figures1(name_measure, dataset):
     table = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
