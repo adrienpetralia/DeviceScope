@@ -14,7 +14,7 @@ from constants import *
 
 st.markdown(text_tab_benchmark)
 
-tab_playground, tab_benchmark, tab_about = st.tabs(
+tab_playground, tab_benchmark = st.tabs(
         ["Metrics Comparaison", "Visual Comparaison"]
     )
     
