@@ -683,7 +683,7 @@ def plot_signatures(appliances):
     for j in range(1, len(appliances) + 1):
         fig.update_xaxes(title_text="Time", row=1, col=j)
         
-    fig.update_layout(title='Example of signature for each appliance (according to selected sampling rate)', 
+    fig.update_layout(title='Example of signature for selected appliance(s)', 
                       yaxis_title='Power (Watts)', 
                       showlegend=False,
                       height=400, 
