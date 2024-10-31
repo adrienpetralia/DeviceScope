@@ -22,7 +22,7 @@ from Models.Classifiers.ResNet5LN import ResNet5LN
 from Helpers.class_activation_map import CAM
         
 
-def run_metric_frame():
+def run_metric_comparaison_frame():
 
     col1, col2 = st.columns(2)
 
@@ -55,7 +55,7 @@ def run_metric_frame():
     # st.plotly_chart(fig_benchmark, use_container_width=True)
 
 
-def run_nilmmodel_frame():
+def run_visualnilmmodel_comparaison_frame():
      st.markdown("To")
 
 

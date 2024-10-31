@@ -19,8 +19,8 @@ tab_playground, tab_benchmark = st.tabs(
     )
     
 with tab_playground:
-    run_metric_frame()
+    run_metric_comparaison_frame()
 
 with tab_benchmark:
-    run_nilmmodel_frame()
+    run_visualnilmmodel_comparaison_frame()
 
