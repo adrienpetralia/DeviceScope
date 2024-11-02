@@ -109,6 +109,8 @@ text_info = f"""
 Work supported by EDF R&D and ANRT French program.
 """
 
+# ========================== Colors ========================== #
+dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'brown', 'Kettle': 'orange', 'Microwave': 'grey'}
 
 
 # ========================== Lists ========================== #
