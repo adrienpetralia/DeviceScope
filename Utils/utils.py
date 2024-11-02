@@ -619,7 +619,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     for z, model in enumerate(to_plot, start=2):
         fig.add_trace(go.Scatter(x=window_df.index, y=window_df[model], mode='lines', 
                                  showlegend=False, name=model.capitalize(), 
-                                 marker_color=dict_color_appliance[appl], fill='tozeroy'), 
+                                 fill='tozeroy'), 
                       row=z, col=1)
 
         # color = dict_color_appliance[appl]        
