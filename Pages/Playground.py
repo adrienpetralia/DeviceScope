@@ -1,7 +1,7 @@
 import streamlit as st
 
-from utils import *
-from constants import *
+from Utils.utils import *
+from Utils.constants import *
     
 # Use session state to store CURRENT_WINDOW to persist across user interactions
 if 'CURRENT_WINDOW' not in st.session_state:

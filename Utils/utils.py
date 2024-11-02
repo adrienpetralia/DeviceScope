@@ -12,7 +12,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 
 # === Customs import === #
-from constants import *
+from Utils.constants import *
 
 from Models.Classifiers.ResNet3 import ResNet3
 from Models.Classifiers.ResNet3LN import ResNet3LN
