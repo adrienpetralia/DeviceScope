@@ -471,7 +471,7 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
     for z, appl in enumerate(appliances, start=1):
 
         fig_appl.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', name=appl.capitalize(), marker_color=dict_color_appliance[appl],  fill='tozeroy'))
-        stacked_cam = None
+        
         pred_dict_app = pred_dict_all_appliance[appl]
 
         #if dict_model['pred_status']:
@@ -493,7 +493,7 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
         threshold = 0
         start_idx = None 
 
-        for i, value in enumerate(stacked_cam):
+        for i, value in enumerate(pred_nilmcam_app):
             if value > threshold and start_idx is None:  # CAM becomes active
                 start_idx = i
             elif value <= threshold and start_idx is not None:  # End of an active segment
