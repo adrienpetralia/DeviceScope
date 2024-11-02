@@ -20,7 +20,7 @@ with col1_2:
         "Choose the window length:", lengths_list, index=2
     )
 with col1_3:
-    appliances1 = st.multiselect(
+    appliances_selected = st.multiselect(
         "Choose devices:", devices_list_ideal if 'IDEAL' in ts_name else devices_list_refit_ukdale,
     )
 
@@ -54,11 +54,10 @@ with colcontrol_2:
         unsafe_allow_html=True)
 
 # Plot data if appliances are selected
-if len(appliances1) > 0:
-    dataset_name  = get_dataset_name(ts_name)
-    pred_dict_all = pred_one_window_playground(st.session_state.CURRENT_WINDOW, df, window_size, dataset_name, appliances1)
-    fig_ts, fig_app, fig_stack = plot_one_window3(st.session_state.CURRENT_WINDOW, df, window_size, appliances1, pred_dict_all)
-    fig_prob = plot_detection_probabilities(pred_dict_all)
+if len(appliances_selected) > 0:
+    dataset_name    = get_dataset_name(ts_name)
+    pred_dict_all   = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW, df, window_size, dataset_name, appliances_selected)
+    fig_ts, fig_app = plot_one_window_playground(st.session_state.CURRENT_WINDOW, df, window_size, appliances_selected, pred_dict_all)
     
     tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
     
@@ -66,19 +65,16 @@ if len(appliances1) > 0:
         st.plotly_chart(fig_ts, use_container_width=True)
     
     with tab_app:
-        on = st.toggle('Stack')
-        if on:
-            st.plotly_chart(fig_stack, use_container_width=True)
-        else:
-            st.plotly_chart(fig_app, use_container_width=True)
+        st.plotly_chart(fig_app, use_container_width=True)
 
     tab_prob, tab_signatures = st.tabs(["Models detection probabilities", "Examples of appliance patterns"])
 
     with tab_prob:
+        fig_prob = plot_detection_probabilities(pred_dict_all)
         st.plotly_chart(fig_prob, use_container_width=True)
 
     with tab_signatures:
-        fig_sig = plot_signatures(appliances1)
+        fig_sig = plot_signatures(appliances_selected)
         st.plotly_chart(fig_sig, use_container_width=True)
 
 else:

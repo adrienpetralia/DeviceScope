@@ -342,22 +342,19 @@ def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
 
 
-def get_prediction_nilmcam_one_appliance(dataset_name, window_agg, appliance):
+def get_predi_nilmcam_one_appliance(dataset_name, window_agg, appliance):
 
-    pred_dict = {}
-    model_name='ResNetEnsemble'
-    path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/{model_name}/'
+    path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/ResNetEnsemble/'
     pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
-    pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_status': soft_label, 'avg_cam': avg_cam}
 
-    return pred_dict
+    return {'pred_prob': pred_prob, 'pred_status': soft_label, 'avg_cam': avg_cam}
 
 
 def get_prediction_nilmbaselines_one_appliance(dataset_name, window_agg, appliance, model_list):
 
     pred_dict = {}
     for model_name in model_list:
-        if model_name=='ResNetEnsemble':
+        if model_name=='NILMCAM':
             path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/{model_name}/'
             pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
         else:
@@ -369,13 +366,13 @@ def get_prediction_nilmbaselines_one_appliance(dataset_name, window_agg, applian
     return pred_dict
 
 
-def pred_one_window_playground(k, df, window_size, dataset_name, appliances, models):
+def pred_one_window_nilmcam(k, df, window_size, dataset_name, appliances, models):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
     window_agg = window_df['Aggregate']
 
     pred_dict = {}
     for appl in appliances:   
-        pred_dict[appl]  = get_prediction_nilmcam_one_appliance(dataset_name, window_agg, appl)
+        pred_dict[appl]  = get_predi_nilmcam_one_appliance(dataset_name, window_agg, appl)
 
     return pred_dict
 
@@ -453,7 +450,7 @@ def plot_one_window_agg(k, df, window_size):
     return fig_agg
 
 
-def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
+def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_appliance):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
     
     # Create subplots with 2 rows, shared x-axis
@@ -465,9 +462,6 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
     fig_appl         = make_subplots(rows=len(appliances)+1, cols=1, shared_xaxes=True, 
                                      vertical_spacing=0.1, row_heights=list_row_heights,
                                      subplot_titles=[""]+appliances)
-    fig_appl_stacked = make_subplots(rows=len(appliances)+1, cols=1, shared_xaxes=True, 
-                                     vertical_spacing=0.1, row_heights=list_row_heights,
-                                     subplot_titles=[""]+appliances)
     
     # Aggregate plot
     fig_agg.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], mode='lines', name='Aggregate', fill='tozeroy', line=dict(color='royalblue')),
@@ -477,39 +471,27 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
     for z, appl in enumerate(appliances, start=1):
 
         fig_appl.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', name=appl.capitalize(), marker_color=dict_color_appliance[appl],  fill='tozeroy'))
-        fig_appl_stacked.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', line=dict(width=0), marker_color=dict_color_appliance[appl], name=appl.capitalize(), stackgroup='one'))
-
         stacked_cam = None
-        dict_pred = pred_dict_all[appl]
+        pred_dict_app = pred_dict_all_appliance[appl]
 
-        k = 0
-        for _, dict_model in dict_pred.items():
-            if dict_model['pred_status'] is not None:
-                tmp_cam = dict_model['pred_status']
-
-                stacked_cam = stacked_cam + tmp_cam if stacked_cam is not None else tmp_cam
-                k += 1
+        #if dict_model['pred_status']:
+        pred_nilmcam_app = pred_dict_app['pred_status']
         
-        # Clip values and ensure it's an array with the same length as window_agg
-        stacked_cam = np.clip(stacked_cam/k, a_min=0, a_max=None) if stacked_cam is not None else np.zeros(len(window_df['Aggregate']))
-    
-        # Stacked CAM
-        fig_agg.add_trace(go.Scatter(x=window_df.index, y=stacked_cam, mode='lines', showlegend=False, name=appl.capitalize(), marker_color=dict_color_appliance[appl], fill='tozeroy'), row=1+z, col=1)
-        fig_appl.add_trace(go.Scatter(x=window_df.index, y=stacked_cam, mode='lines', showlegend=False,  name=appl.capitalize(), marker_color=dict_color_appliance[appl],  fill='tozeroy'), row=1+z, col=1)
-        fig_appl_stacked.add_trace(go.Scatter(x=window_df.index, y=stacked_cam, mode='lines', showlegend=False,  name=appl.capitalize(), marker_color=dict_color_appliance[appl],  fill='tozeroy'), row=1+z, col=1)
-        
+        fig_agg.add_trace(go.Scatter(x=window_df.index, y=pred_nilmcam_app, mode='lines', showlegend=False, name=appl.capitalize(), marker_color=dict_color_appliance[appl], fill='tozeroy'), row=1+z, col=1)
+        fig_appl.add_trace(go.Scatter(x=window_df.index, y=pred_nilmcam_app, mode='lines', showlegend=False,  name=appl.capitalize(), marker_color=dict_color_appliance[appl],  fill='tozeroy'), row=1+z, col=1)
 
-        # Example modification: Iterate over stacked_cam to identify and draw rectangles
-        color = dict_color_appliance[appl]  # Get color for the current appliance
-        start_idx = None  # Start index of the active segment
+
+        color = dict_color_appliance[appl]  # Get color for the current appliance        
 
         if appl=='WashingMachine' or appl=='Dishwasher':
             w=30
         else:
             w=15
-        stacked_cam = np.convolve(stacked_cam, np.ones(w), 'same') / w
+            
+        pred_nilmcam_app = np.convolve(pred_nilmcam_app, np.ones(w), 'same') / w
 
-        threshold = 0.2
+        threshold = 0
+        start_idx = None 
 
         for i, value in enumerate(stacked_cam):
             if value > threshold and start_idx is None:  # CAM becomes active
@@ -564,32 +546,17 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         margin=dict(l=100, r=20, t=30, b=40),
         **xaxis_title_dict
     )
-
-    fig_appl_stacked.update_layout(
-        title='Individual appliance power consumption compared to predicted appliance localization',
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=-0.2),
-        height=500,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40),
-        **xaxis_title_dict
-    )
     
     fig_agg.update_annotations(font=dict(family="Helvetica", size=15))
     fig_appl.update_annotations(font=dict(family="Helvetica", size=15))
-    fig_appl_stacked.update_annotations(font=dict(family="Helvetica", size=15))
 
     fig_agg.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
     fig_appl.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-    fig_appl_stacked.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-    
+   
     # Update y-axis for the heatmap
     for z, appl in enumerate(appliances, start=2):
         fig_agg.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
         fig_appl.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
-        fig_appl_stacked.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
-    #fig_agg.update_yaxes(tickmode='array', tickvals=list(appliances), ticktext=appliances, row=2, col=1, tickangle=-45)
-    #fig_appl.update_yaxes(tickmode='array', tickvals=list(appliances), ticktext=appliances, row=2, col=1, tickangle=-45)
-    #fig_appl_stacked.update_yaxes(tickmode='array', tickvals=list(appliances), ticktext=appliances, row=2, col=1, tickangle=-45)
 
     if len(appliances)==4:
         yaxis_title_y = 0.3
@@ -601,7 +568,7 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         yaxis_title_y = 0.22
         
     shared_yaxis_title = {
-        'text': "Localization",  # Update with your desired title
+        'text': "Pred. App(s) Status",  # Update with your desired title
         'showarrow': False,
         'xref': 'paper',
         'yref': 'paper',
@@ -613,13 +580,13 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         'font': {'size': 15}
     }
 
-    for fig in [fig_agg, fig_appl, fig_appl_stacked]:
+    for fig in [fig_agg, fig_appl]:
         if 'annotations' in fig.layout:
             fig.layout.annotations += (shared_yaxis_title,)
         else:
             fig.update_layout(annotations=[shared_yaxis_title])
 
-    return fig_agg, fig_appl, fig_appl_stacked
+    return fig_agg, fig_appl
 
 
 def plot_detection_probabilities(data):
@@ -627,7 +594,7 @@ def plot_detection_probabilities(data):
     num_appliances = len(data)
     appliances = list(data.keys())
 
-    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'ResNetEnsemble': 'peachpuff'}
+    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'NILMCAM': 'peachpuff'}
 
     # Create subplots: one row, as many columns as there are appliances
     fig = make_subplots(rows=1, cols=num_appliances, subplot_titles=appliances, shared_yaxes=True)
@@ -635,16 +602,10 @@ def plot_detection_probabilities(data):
     for i, appliance in enumerate(appliances, start=1):
         appliance_data = data[appliance]
         models = list(appliance_data.keys())
-        #class_0_probs = [appliance_data[model]['pred_prob'][0] for model in models]
         class_1_probs = [appliance_data[model]['pred_prob'] for model in models]
         color_model   = [dict_color_model[model] for model in models]
 
-        # Calculating the average probabilities for the ensemble model
-        #ensemble_class_0_avg = np.mean(class_0_probs)
-        ensemble_class_1_avg = np.mean(class_1_probs)
-
         # Add bars for each class in the subplot
-        #fig.add_trace(go.Bar(x=models, y=class_0_probs, name='Class 0 Probability', marker_color='indianred'), row=1, col=i)
         fig.add_trace(go.Bar(x=models, y=class_1_probs,  marker_color=color_model), row=1, col=i)
 
     for axis in fig.layout:

@@ -25,8 +25,6 @@ with tab_playground:
     run_metric_comparaison_frame()
 
 with tab_benchmark:
-    run_visualnilmmodel_comparaison_frame()
-
     col1_1, col1_2, col1_3 = st.columns(3)
 
     with col1_1:
@@ -38,7 +36,7 @@ with tab_benchmark:
             "Choose the window length:", lengths_list, index=2
         )
     with col1_3:
-        appliances1 = st.selectbox(
+        appliance_selected = st.selectbox(
             "Choose devices:", devices_list_ideal if 'IDEAL' in ts_name else devices_list_refit_ukdale,
         )
 
@@ -70,3 +68,10 @@ with tab_benchmark:
             df.iloc[st.session_state.CURRENT_WINDOW_BENCHMARK * window_size: (st.session_state.CURRENT_WINDOW_BENCHMARK + 1) * window_size].index[0],
             df.iloc[st.session_state.CURRENT_WINDOW_BENCHMARK * window_size: (st.session_state.CURRENT_WINDOW_BENCHMARK + 1) * window_size].index[-1]),
             unsafe_allow_html=True)
+        
+        pred_status_flag = st.toggle('Predict Status')
+
+        dataset_name = 'IDEAL'
+        pred = pd.read_csv(os.getcwd()+'Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip', parse_dates=['Time'], index_col=['Time'], compression='gzip')
+        
+        pred_nilmcam = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW, df, window_size, dataset_name, appliance_selected)
