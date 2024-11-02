@@ -503,7 +503,7 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
             w=15
         stacked_cam = np.convolve(stacked_cam, np.ones(w), 'same') / w
 
-        threshold = 0
+        threshold = 0.2
 
         for i, value in enumerate(stacked_cam):
             if value > threshold and start_idx is None:  # CAM becomes active
