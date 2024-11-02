@@ -55,50 +55,32 @@ with colcontrol_2:
 
 # Plot data if appliances are selected
 if len(appliances1) > 0:
-    if len(models) > 0:
-        pred_dict_all = pred_one_window(st.session_state.CURRENT_WINDOW, df, window_size, ts_name, appliances1, models)
-        fig_ts, fig_app, fig_stack = plot_one_window3(st.session_state.CURRENT_WINDOW, df, window_size, appliances1, pred_dict_all)
-        fig_prob = plot_detection_probabilities(pred_dict_all)
-        
-        tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
-        
-        with tab_ts:
-            st.plotly_chart(fig_ts, use_container_width=True)
-        
-        with tab_app:
-            on = st.toggle('Stack')
-            if on:
-                st.plotly_chart(fig_stack, use_container_width=True)
-            else:
-                st.plotly_chart(fig_app, use_container_width=True)
+    dataset_name  = get_dataset_name(ts_name)
+    pred_dict_all = pred_one_window_playground(st.session_state.CURRENT_WINDOW, df, window_size, dataset_name, appliances1)
+    fig_ts, fig_app, fig_stack = plot_one_window3(st.session_state.CURRENT_WINDOW, df, window_size, appliances1, pred_dict_all)
+    fig_prob = plot_detection_probabilities(pred_dict_all)
+    
+    tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
+    
+    with tab_ts:
+        st.plotly_chart(fig_ts, use_container_width=True)
+    
+    with tab_app:
+        on = st.toggle('Stack')
+        if on:
+            st.plotly_chart(fig_stack, use_container_width=True)
+        else:
+            st.plotly_chart(fig_app, use_container_width=True)
 
-        tab_prob, tab_signatures = st.tabs(["Models detection probabilities", "Examples of appliance patterns"])
+    tab_prob, tab_signatures = st.tabs(["Models detection probabilities", "Examples of appliance patterns"])
 
-        with tab_prob:
-            st.plotly_chart(fig_prob, use_container_width=True)
+    with tab_prob:
+        st.plotly_chart(fig_prob, use_container_width=True)
 
-        with tab_signatures:
-            fig_sig = plot_signatures(appliances1)
-            st.plotly_chart(fig_sig, use_container_width=True)
-
-    else:
-        fig_ts, fig_app, fig_stack = plot_one_window2(st.session_state.CURRENT_WINDOW, df, window_size, appliances1)
-
-        tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
-
-        with tab_ts:
-            st.plotly_chart(fig_ts, use_container_width=True)
-        
-        with tab_app:
-            on = st.toggle('Stack')
-            if on:
-                st.plotly_chart(fig_stack, use_container_width=True)
-            else:
-                st.plotly_chart(fig_app, use_container_width=True)
-        
+    with tab_signatures:
         fig_sig = plot_signatures(appliances1)
-
         st.plotly_chart(fig_sig, use_container_width=True)
+
 else:
     fig_ts = plot_one_window_agg(st.session_state.CURRENT_WINDOW, df, window_size)
     st.plotly_chart(fig_ts, use_container_width=True)

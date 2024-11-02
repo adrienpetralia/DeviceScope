@@ -100,8 +100,6 @@ def plot_benchmark_figures2(name_measure, dataset):
 
     table['Appliance'] = table['Appliance'].astype('category')
 
-    #dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
-
     min_val = table[measure].values.flatten().min()
     # Create the grouped bar plot
     fig = px.bar(table, 
@@ -344,12 +342,23 @@ def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
 
 
-def get_prediction_one_appliance(ts_name, window_agg, appliance, model_list):
+def get_prediction_nilmcam_one_appliance(dataset_name, window_agg, appliance):
+
+    pred_dict = {}
+    model_name='ResNetEnsemble'
+    path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/{model_name}/'
+    pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
+    pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_status': soft_label, 'avg_cam': avg_cam}
+
+    return pred_dict
+
+
+def get_prediction_nilmbaselines_one_appliance(dataset_name, window_agg, appliance, model_list):
 
     pred_dict = {}
     for model_name in model_list:
         if model_name=='ResNetEnsemble':
-            path_ensemble = os.getcwd()+f'/TrainedModels/{get_dataset_name(ts_name)}/1min/{appliance}/{model_name}/'
+            path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/{model_name}/'
             pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
         else:
             print('Not implemented')
@@ -360,22 +369,20 @@ def get_prediction_one_appliance(ts_name, window_agg, appliance, model_list):
     return pred_dict
 
 
-def pred_one_window(k, df, window_size, ts_name, appliances, models):
+def pred_one_window_playground(k, df, window_size, dataset_name, appliances, models):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
     window_agg = window_df['Aggregate']
 
-    pred_dict_all = {}
-    for appl in appliances:
-        pred_dict_appl      = get_prediction_one_appliance(ts_name, window_agg, appl, models)
-        pred_dict_all[appl] = pred_dict_appl
+    pred_dict = {}
+    for appl in appliances:   
+        pred_dict[appl]  = get_prediction_nilmcam_one_appliance(dataset_name, window_agg, appl)
 
-    return pred_dict_all
+    return pred_dict
 
 
 
 def plot_one_window2(k, df, window_size, appliances):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
-    #dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
 
     fig_agg          = go.Figure()
     fig_appl         = go.Figure()
@@ -448,7 +455,6 @@ def plot_one_window_agg(k, df, window_size):
 
 def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
-    #dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'orange', 'Kettle': 'orange', 'Microwave': 'grey'}
     
     # Create subplots with 2 rows, shared x-axis
     list_row_heights = [0.6] + [0.4/len(appliances) for _ in range(len(appliances))]
@@ -667,7 +673,6 @@ def plot_detection_probabilities(data):
 
 def plot_signatures(appliances):
     fig = make_subplots(rows=1, cols=len(appliances), subplot_titles=[f'{appliance}' for appliance in appliances], shared_yaxes=True)
-    #dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'brown', 'Kettle': 'orange', 'Microwave': 'grey'}
 
     for i, appliance in enumerate(appliances, start=1):
         print(appliance)
