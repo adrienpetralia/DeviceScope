@@ -1,4 +1,5 @@
 # Counter
+global CURRENT_WINDOW
 CURRENT_WINDOW=0
 
 # ========================== Texts ========================== #
