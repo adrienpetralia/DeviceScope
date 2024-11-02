@@ -595,11 +595,12 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     
     to_plot = list(df.columns)
 
-    # Create subplots, shared x-axis
-    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(len(to_plot)-2)]
 
-    fig = make_subplots(rows=len(to_plot)-1, cols=1, 
-                        shared_xaxes=True, vertical_spacing=0.1, row_heights=list_row_heights,
+    # Create subplots, shared x-axis
+    #list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(len(to_plot)-1)]
+
+    fig = make_subplots(rows=len(to_plot), cols=1, 
+                        shared_xaxes=True, vertical_spacing=0.1,
                         subplot_titles=[""]+to_plot)
     
     # Aggregate plot
@@ -685,8 +686,8 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
  
     # Update y-axis for the heatmap
-    for z, appl in enumerate(to_plot, start=2):
-        fig.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
+    # for z, appl in enumerate(to_plot, start=2):
+    #     fig.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
 
     if len(to_plot)==4:
         yaxis_title_y = 0.3
