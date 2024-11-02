@@ -38,7 +38,7 @@ with tab_benchmark:
             "Choose the window length:", lengths_list, index=2
         )
     with col1_3:
-        appliances1 = st.multiselect(
+        appliances1 = st.selectbox(
             "Choose devices:", devices_list_ideal if 'IDEAL' in ts_name else devices_list_refit_ukdale,
         )
 
