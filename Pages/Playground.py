@@ -30,7 +30,7 @@ with col1_3:
 
 models    = ['ResNetEnsemble']
 
-print(CURRENT_WINDOW)
+st.write(CURRENT_WINDOW)
 
 colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2,0.8,0.2])
 with colcontrol_1:
@@ -42,14 +42,14 @@ with colcontrol_3:
 
 df, window_size = get_time_series_data(ts_name, length=length)
 n_win = len(df) // window_size
-print(n_win)
+st.write(n_win)
 
 if CURRENT_WINDOW > n_win:
     CURRENT_WINDOW=0
 elif CURRENT_WINDOW < 0:
     CURRENT_WINDOW=n_win
 
-print(CURRENT_WINDOW)
+st.write(CURRENT_WINDOW)
 
 with colcontrol_2:
     st.markdown("<p style='text-align: center;'> <b>from</b> <i>{}</i> <b>to</b> <i>{}</i> </p>".format(df.iloc[CURRENT_WINDOW*window_size: (CURRENT_WINDOW+1)*window_size].index[0],df.iloc[CURRENT_WINDOW*window_size: (CURRENT_WINDOW+1)*window_size].index[-1]),unsafe_allow_html=True)
