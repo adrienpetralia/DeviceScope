@@ -595,12 +595,12 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     
     to_plot = list(df.columns)
 
-    # Create subplots with 2 rows, shared x-axis
-    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(len(to_plot))]
+    # Create subplots, shared x-axis
+    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(len(to_plot)-2)]
 
     fig = make_subplots(rows=len(to_plot)-1, cols=1, 
-                            shared_xaxes=True, vertical_spacing=0.1, row_heights=list_row_heights,
-                            subplot_titles=[""]+to_plot)
+                        shared_xaxes=True, vertical_spacing=0.1, row_heights=list_row_heights,
+                        subplot_titles=[""]+to_plot)
     
     # Aggregate plot
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], 
