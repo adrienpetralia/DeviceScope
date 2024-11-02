@@ -479,7 +479,7 @@ def plot_one_window3(k, df, window_size, appliances, pred_dict_all):
         k = 0
         for _, dict_model in dict_pred.items():
             if dict_model['pred_status'] is not None:
-                tmp_cam = dict_model['avg_cam']
+                tmp_cam = dict_model['pred_status']
 
                 stacked_cam = stacked_cam + tmp_cam if stacked_cam is not None else tmp_cam
                 k += 1
