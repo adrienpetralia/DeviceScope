@@ -76,3 +76,4 @@ with tab_benchmark:
         
         pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
         fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, 'Dishwasher', pred_nilmcam)
+        st.plotly_chart(fig_comparaison, use_container_width=True)
