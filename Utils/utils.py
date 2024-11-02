@@ -670,15 +670,15 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
         #     )
 
     # Update layout for the combined figure
-    xaxis_title_dict = {f'xaxis{len(to_plot)+1}_title': 'Time'}
-    fig.update_layout(
-        title='Aggregate power consumption and predicted appliance localization',
-        showlegend=False,
-        height=500,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40),
-        **xaxis_title_dict
-    )
+    # xaxis_title_dict = {f'xaxis{len(to_plot)+1}_title': 'Time'}
+    # fig.update_layout(
+    #     title='Aggregate power consumption and predicted appliance localization',
+    #     showlegend=False,
+    #     height=500,
+    #     width=1000,
+    #     margin=dict(l=100, r=20, t=30, b=40),
+    #     **xaxis_title_dict
+    # )
     
     
     fig.update_annotations(font=dict(family="Helvetica", size=15))
