@@ -12,8 +12,8 @@ from Utils.utils import *
 from Utils.constants import *
 
 # Use session state to store CURRENT_WINDOW_BENCHMARK to persist across user interactions
-if 'CURRENT_WINDOW_BENCHMARK_BENCHMARK' not in st.session_state:
-    st.session_state.CURRENT_WINDOW_BENCHMARK_BENCHMARK = 0
+if 'CURRENT_WINDOW_BENCHMARK' not in st.session_state:
+    st.session_state.CURRENT_WINDOW_BENCHMARK = 0
 
 st.markdown(text_tab_benchmark)
 
