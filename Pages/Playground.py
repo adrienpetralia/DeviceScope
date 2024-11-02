@@ -55,9 +55,9 @@ with colcontrol_2:
 
 # Plot data if appliances are selected
 if len(appliances_selected) > 0:
-    dataset_name    = get_dataset_name(ts_name)
-    pred_dict_all   = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW, df, window_size, dataset_name, appliances_selected)
-    fig_ts, fig_app = plot_one_window_playground(st.session_state.CURRENT_WINDOW, df, window_size, appliances_selected, pred_dict_all)
+    dataset_name      = get_dataset_name(ts_name)
+    pred_dict_all_app = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW, df, window_size, dataset_name, appliances_selected)
+    fig_ts, fig_app   = plot_one_window_playground(st.session_state.CURRENT_WINDOW, df, window_size, appliances_selected, pred_dict_all_app)
     
     tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
     
@@ -70,7 +70,7 @@ if len(appliances_selected) > 0:
     tab_prob, tab_signatures = st.tabs(["Models detection probabilities", "Examples of appliance patterns"])
 
     with tab_prob:
-        fig_prob = plot_detection_probabilities(pred_dict_all)
+        fig_prob = plot_detection_probabilities(pred_dict_all_app)
         st.plotly_chart(fig_prob, use_container_width=True)
 
     with tab_signatures:

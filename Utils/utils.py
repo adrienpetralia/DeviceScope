@@ -487,7 +487,7 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
             w=30
         else:
             w=15
-            
+
         pred_nilmcam_app = np.convolve(pred_nilmcam_app, np.ones(w), 'same') / w
 
         threshold = 0
@@ -601,12 +601,12 @@ def plot_detection_probabilities(data):
 
     for i, appliance in enumerate(appliances, start=1):
         appliance_data = data[appliance]
-        models = list(appliance_data.keys())
-        class_1_probs = [appliance_data[model]['pred_prob'] for model in models]
-        color_model   = [dict_color_model[model] for model in models]
+        models = ['NILMCAM']
+        probabilites = [appliance_data['pred_prob']]
+        color_model  = [dict_color_model['NILMCAM']]
 
         # Add bars for each class in the subplot
-        fig.add_trace(go.Bar(x=models, y=class_1_probs,  marker_color=color_model), row=1, col=i)
+        fig.add_trace(go.Bar(x=models, y=probabilites,  marker_color=color_model), row=1, col=i)
 
     for axis in fig.layout:
         if axis.startswith('yaxis'):
