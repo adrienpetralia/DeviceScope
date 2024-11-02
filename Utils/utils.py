@@ -471,10 +471,10 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
     for z, appl in enumerate(appliances, start=1):
 
         fig_appl.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', name=appl.capitalize(), marker_color=dict_color_appliance[appl],  fill='tozeroy'))
-        
+
         pred_dict_app = pred_dict_all_appliance[appl]
 
-        #if dict_model['pred_status']:
+        #if label_to_display=='status':
         pred_nilmcam_app = pred_dict_app['pred_status']
         
         fig_agg.add_trace(go.Scatter(x=window_df.index, y=pred_nilmcam_app, mode='lines', showlegend=False, name=appl.capitalize(), marker_color=dict_color_appliance[appl], fill='tozeroy'), row=1+z, col=1)
@@ -587,6 +587,136 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
             fig.update_layout(annotations=[shared_yaxis_title])
 
     return fig_agg, fig_appl
+
+
+
+def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appliance):
+    window_df = df.iloc[k*window_size: k*window_size + window_size]
+    
+    to_plot = list(df.columns)
+
+    # Create subplots with 2 rows, shared x-axis
+    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(len(to_plot))]
+
+    fig = make_subplots(rows=len(to_plot)-1, cols=1, 
+                            shared_xaxes=True, vertical_spacing=0.1, row_heights=list_row_heights,
+                            subplot_titles=[""]+to_plot)
+    
+    # Aggregate plot
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], 
+                             mode='lines', 
+                             name='Aggregate', fill='tozeroy', 
+                             line=dict(color='royalblue')),
+                  row=1, col=1)
+    
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df[appliance], 
+                             mode='lines', 
+                             name=appliance, fill='tozeroy', 
+                             line=dict(color='royalblue')),
+                  row=1, col=1)
+    
+    # Stacked CAM calculations
+    for z, model in enumerate(to_plot, start=2):
+        fig.add_trace(go.Scatter(x=window_df.index, y=window_df[model], mode='lines', 
+                                 showlegend=False, name=model.capitalize(), 
+                                 marker_color=dict_color_appliance[appl], fill='tozeroy'), 
+                      row=z, col=1)
+
+        # color = dict_color_appliance[appl]        
+
+        # if appl=='WashingMachine' or appl=='Dishwasher':
+        #     w=30
+        # else:
+        #     w=15
+
+        # pred_nilmcam_app = np.convolve(pred_nilmcam_app, np.ones(w), 'same') / w
+
+        # threshold = 0
+        # start_idx = None 
+
+        # for i, value in enumerate(pred_nilmcam_app):
+        #     if value > threshold and start_idx is None:  # CAM becomes active
+        #         start_idx = i
+        #     elif value <= threshold and start_idx is not None:  # End of an active segment
+        #         # Add shape for the active segment
+        #         fig_agg.add_shape(
+        #             type="rect",
+        #             x0=window_df.index[start_idx],  # Convert index to x-value as needed
+        #             y0=0,
+        #             x1=window_df.index[i],
+        #             y1=max(3000, np.max(window_df['Aggregate'].values) + 50),
+        #             line=dict(width=0),
+        #             fillcolor=color,
+        #             opacity=0.3,  # Adjust for desired transparency
+        #             layer="below",
+        #             row=1, col=1
+        #         )
+        #         start_idx = None  # Reset for next segment
+
+        # # Check if there's an active segment until the end
+        # if start_idx is not None:
+        #     fig_agg.add_shape(
+        #         type="rect",
+        #         x0=window_df.index[start_idx],
+        #         y0=0,
+        #         x1=window_df.index[-1],
+        #         y1=max(3000, np.max(window_df['Aggregate'].values) + 50),
+        #         line=dict(width=0),
+        #         fillcolor=color,
+        #         opacity=0.3,
+        #         layer="below",
+        #         row=1, col=1
+        #     )
+
+    # Update layout for the combined figure
+    xaxis_title_dict = {f'xaxis{len(to_plot)+1}_title': 'Time'}
+    fig.update_layout(
+        title='Aggregate power consumption and predicted appliance localization',
+        showlegend=False,
+        height=500,
+        width=1000,
+        margin=dict(l=100, r=20, t=30, b=40),
+        **xaxis_title_dict
+    )
+    
+    
+    fig.update_annotations(font=dict(family="Helvetica", size=15))
+
+    fig.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
+ 
+    # Update y-axis for the heatmap
+    for z, appl in enumerate(to_plot, start=2):
+        fig.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
+
+    if len(to_plot)==4:
+        yaxis_title_y = 0.3
+    elif len(to_plot)==3:
+        yaxis_title_y = 0.27
+    elif len(to_plot)==3:
+        yaxis_title_y = 0.25
+    else:
+        yaxis_title_y = 0.22
+        
+    shared_yaxis_title = {
+        'text': "Pred. App(s) Status",  # Update with your desired title
+        'showarrow': False,
+        'xref': 'paper',
+        'yref': 'paper',
+        'x': -0.05,
+        'y': yaxis_title_y,
+        'xanchor': 'center',
+        'yanchor': 'middle',
+        'textangle': -90,  # Rotate the text for vertical alignment
+        'font': {'size': 15}
+    }
+
+    if 'annotations' in fig.layout:
+        fig.layout.annotations += (shared_yaxis_title,)
+    else:
+        fig.update_layout(annotations=[shared_yaxis_title])
+
+    return fig
+
 
 
 def plot_detection_probabilities(data):

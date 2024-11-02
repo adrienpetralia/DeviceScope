@@ -81,6 +81,6 @@ else:
     fig_ts = plot_one_window_agg(st.session_state.CURRENT_WINDOW, df, window_size)
     st.plotly_chart(fig_ts, use_container_width=True)
 
-    all_appliances = ['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle', 'Shower']
-    fig_sig = plot_signatures(all_appliances)
+    # Plot examples for all possible appliances
+    fig_sig = plot_signatures(['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle', 'Shower'])
     st.plotly_chart(fig_sig, use_container_width=True)

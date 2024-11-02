@@ -74,4 +74,5 @@ with tab_benchmark:
         dataset_name = 'IDEAL'
         pred = pd.read_csv(os.getcwd()+'Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip', parse_dates=['Time'], index_col=['Time'], compression='gzip')
         
-        pred_nilmcam = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW, df, window_size, dataset_name, appliance_selected)
+        pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, appliance_selected)
+        fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, appliance_selected, pred_nilmcam)
