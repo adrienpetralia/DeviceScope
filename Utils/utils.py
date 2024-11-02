@@ -366,7 +366,7 @@ def get_prediction_nilmbaselines_one_appliance(dataset_name, window_agg, applian
     return pred_dict
 
 
-def pred_one_window_nilmcam(k, df, window_size, dataset_name, appliances, models):
+def pred_one_window_nilmcam(k, df, window_size, dataset_name, appliances):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
     window_agg = window_df['Aggregate']
 
