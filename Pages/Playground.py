@@ -26,8 +26,6 @@ with col1_3:
 
 models = ['ResNetEnsemble']
 
-# Display the current window index
-st.write(st.session_state.CURRENT_WINDOW)
 
 colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
 with colcontrol_1:
@@ -40,7 +38,6 @@ with colcontrol_3:
 # Load the time series data
 df, window_size = get_time_series_data(ts_name, length=length)
 n_win = len(df) // window_size
-st.write(n_win)
 
 # Ensure CURRENT_WINDOW stays within valid bounds
 if st.session_state.CURRENT_WINDOW >= n_win:
@@ -48,8 +45,6 @@ if st.session_state.CURRENT_WINDOW >= n_win:
 elif st.session_state.CURRENT_WINDOW < 0:
     st.session_state.CURRENT_WINDOW = n_win - 1
 
-# Display the current window index again after bounds check
-st.write(st.session_state.CURRENT_WINDOW)
 
 # Display window range
 with colcontrol_2:
