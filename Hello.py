@@ -8,7 +8,7 @@
 import streamlit as st
 from st_pages import Page, show_pages, add_page_title
 
-from utils import *
+from Utils.utils import *
 
 # Specify what pages should be shown in the sidebar
 show_pages(

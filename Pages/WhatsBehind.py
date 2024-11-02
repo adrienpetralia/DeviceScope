@@ -7,8 +7,8 @@
 
 import streamlit as st
 
-from utils import *
-from constants import *
+from Utils.utils import *
+from Utils.constants import *
 
 st.markdown(text_about)
 
