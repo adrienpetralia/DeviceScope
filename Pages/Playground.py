@@ -9,14 +9,14 @@ if 'CURRENT_WINDOW' not in st.session_state:
 
 st.markdown(text_tab_playground)
 
-col1_1, col1_2, col1_3 = st.columns(3)
+col1_1, col1_2 = st.columns(2)
 
 with col1_1:
     dataset_name = st.selectbox(
         "Choose a load curve", list_dataset, index=0
     )
 
-with col1_1:
+with col1_2:
     if dataset_name=='UKDALE':
         list_name_ts = list_ukdale_ts
     elif dataset_name=='REFIT':
@@ -28,11 +28,14 @@ with col1_1:
     ts_name = st.selectbox(
         "Choose a load curve", list_name_ts, index=0
     )
-with col1_2:
+
+col2_1, col2_2 = st.columns(2)
+
+with col2_1:
     length = st.selectbox(
         "Choose the window length:", lengths_list, index=2
     )
-with col1_3:
+with col2_2:
     appliances_selected = st.multiselect(
         "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale,
     )
