@@ -563,18 +563,21 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     # Aggregate plot
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], 
                              mode='lines', 
+                             showlegend=False,
                              name='Aggregate', fill='tozeroy', 
                              line=dict(color='royalblue')),
                   row=1, col=1)
     
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df[appliance], 
                              mode='lines', 
+                             showlegend=False,
                              name=appliance, fill='tozeroy', 
                              line=dict(color=dict_color_appliance[appliance])),
                   row=1, col=1)
 
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df[appliance+'_Status'], 
                              mode='lines', 
+                             showlegend=False,
                              name=appliance, fill='tozeroy', 
                              line=dict(color=dict_color_appliance[appliance])),
                   row=2, col=1)
@@ -606,8 +609,8 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
                     row=7, col=1)
     
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df['CRNNWeak'], mode='lines', 
-                                showlegend=False, name='CRNN (Weak)', 
-                                fill='tozeroy'), 
+                             showlegend=False, name='CRNN (Weak)', 
+                             fill='tozeroy'), 
                     row=8, col=1)
 
         # color = dict_color_appliance[appl]        
