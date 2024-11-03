@@ -111,7 +111,7 @@ Work supported by EDF R&D and ANRT French program.
 
 # ========================== Colors ========================== #
 dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'brown', 'Kettle': 'orange', 'Microwave': 'grey'}
-
+dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'NILMCAM': 'peachpuff'}
 
 # ========================== Lists ========================== #
 lengths_list   = ['6 hours', '12 hours', '1 Day']

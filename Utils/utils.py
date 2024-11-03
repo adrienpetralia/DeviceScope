@@ -715,8 +715,6 @@ def plot_detection_probabilities(data):
     num_appliances = len(data)
     appliances = list(data.keys())
 
-    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'NILMCAM': 'peachpuff'}
-
     # Create subplots: one row, as many columns as there are appliances
     fig = make_subplots(rows=1, cols=num_appliances, subplot_titles=appliances, shared_yaxes=True)
 
