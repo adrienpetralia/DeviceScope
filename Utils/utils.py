@@ -383,56 +383,6 @@ def pred_one_window_nilmcam(k, df, window_size, dataset_name, appliances):
     return pred_dict
 
 
-
-def plot_one_window2(k, df, window_size, appliances):
-    window_df = df.iloc[k*window_size: k*window_size + window_size]
-
-    fig_agg          = go.Figure()
-    fig_appl         = go.Figure()
-    fig_appl_stacked = go.Figure()
-    
-    # Aggregate plot
-    fig_agg.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], mode='lines', name='Aggregate', fill='tozeroy', line=dict(color='royalblue')))
-    
-    for appl in appliances:
-        fig_appl.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', name=appl.capitalize(), marker_color=dict_color_appliance[appl], fill='tozeroy'))
-        fig_appl_stacked.add_trace(go.Scatter(x=window_df.index, y=window_df[appl], mode='lines', line=dict(width=0), marker_color=dict_color_appliance[appl], name=appl.capitalize(), stackgroup='one'))
-    
-    # Update layout for the combined figure
-    fig_agg.update_layout(
-        title='Aggregate power consumption',
-        xaxis_title='Time',
-        height=300,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40)
-    )
-
-    fig_appl.update_layout(
-        title='Individual appliance power consumption',
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=-0.5),
-        xaxis_title='Time',
-        height=300,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40)
-    )
-
-    fig_appl_stacked.update_layout(
-        title='Individual appliance power consumption (stacked)',
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=-0.4),
-        xaxis_title='Time',
-        height=300,
-        width=1000,
-        margin=dict(l=100, r=20, t=30, b=40)
-    )
-    
-    # Update y-axis for the aggregate consumption plot
-    fig_agg.update_yaxes(title_text='Power (Watts)', range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-    fig_appl.update_yaxes(title_text='Power (Watts)', range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-    fig_appl_stacked.update_yaxes(title_text='Power (Watts)', range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
-
-    return fig_agg, fig_appl, fig_appl_stacked
-
-
 def plot_one_window_agg(k, df, window_size):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
 
@@ -711,8 +661,8 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig.update_layout(
         title='Aggregate power consumption and predicted appliance localization',
         showlegend=False,
-        height=500,
-        width=1000,
+        height=1000,
+        width=2000,
         margin=dict(l=100, r=20, t=30, b=40),
         **xaxis_title_dict
     )
