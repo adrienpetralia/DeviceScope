@@ -662,8 +662,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig.update_layout(
         title='Aggregate power consumption and predicted appliance localization',
         showlegend=False,
-        height=2000,
-        width=1000,
+        height=600,
         margin=dict(l=100, r=20, t=30, b=40),
         **xaxis_title_dict
     )
