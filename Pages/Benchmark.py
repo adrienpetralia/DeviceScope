@@ -69,13 +69,13 @@ with tab_benchmark:
             df.iloc[st.session_state.CURRENT_WINDOW_BENCHMARK * window_size: (st.session_state.CURRENT_WINDOW_BENCHMARK + 1) * window_size].index[-1]),
             unsafe_allow_html=True)
         
-        pred_status_flag = st.toggle('Predict Status')
+    pred_status_flag = st.toggle('Predict Status')
 
-        dataset_name = 'IDEAL'
-        
-        pred = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip')
-        #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
-        pred_nilmcam = 0
-        fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, 'Dishwasher', pred_nilmcam)
-        st.plotly_chart(fig_comparaison, use_container_width=True)
+    dataset_name = 'IDEAL'
+    
+    pred = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip')
+    #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
+    pred_nilmcam = 0
+    fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, 'Dishwasher', pred_nilmcam)
+    st.plotly_chart(fig_comparaison, use_container_width=True)
 
