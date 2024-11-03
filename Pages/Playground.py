@@ -12,6 +12,19 @@ st.markdown(text_tab_playground)
 col1_1, col1_2, col1_3 = st.columns(3)
 
 with col1_1:
+    dataset_name = st.selectbox(
+        "Choose a load curve", list_dataset, index=0
+    )
+
+with col1_1:
+    if dataset_name=='UKDALE':
+        list_name_ts = list_ukdale_ts
+    elif dataset_name=='REFIT':
+        list_name_ts = list_refit_ts
+    elif dataset_name=='IDEAL':
+        list_name_ts = list_ukdale_ts
+    else:
+        raise ValueError('Wrong dataset name.')
     ts_name = st.selectbox(
         "Choose a load curve", list_name_ts, index=0
     )
@@ -21,7 +34,7 @@ with col1_2:
     )
 with col1_3:
     appliances_selected = st.multiselect(
-        "Choose devices:", devices_list_ideal if 'IDEAL' in ts_name else devices_list_refit_ukdale,
+        "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale,
     )
 
 models = ['ResNetEnsemble']

@@ -120,51 +120,16 @@ devices_list_refit_ukdale = ['WashingMachine', 'Dishwasher', 'Microwave', 'Kettl
 devices_list_ideal        = ['WashingMachine', 'Dishwasher', 'Shower']
 
 measures_list  = ['Accuracy', 'Balanced Accuracy', 'F1 Macro']
+
 dataset_list   = ['All', 'UKDALE', 'REFIT']
 
-list_name_ts   = ['UKDALE_House2_2013-05', 
-                  'UKDALE_House2_2013-06', 
-                  'UKDALE_House2_2013-07', 
-                  'UKDALE_House2_2013-08', 
-                  'UKDALE_House2_2013-09', 
-                  'UKDALE_House2_2013-10',
-                  'IDEAL_House65_2017-06', 
-                  'IDEAL_House65_2018-02', 
-                  'IDEAL_House65_2018-04', 
-                  'IDEAL_House175_2018-01', 
-                  'REFIT_House2_2013-10',
-                  'REFIT_House2_2013-11',
-                  'REFIT_House2_2013-12',
-                  'REFIT_House2_2014-01',
-                  'REFIT_House2_2014-02',
-                  'REFIT_House2_2014-03',
-                  'REFIT_House2_2014-04',
-                  'REFIT_House2_2014-05',
-                  'REFIT_House2_2014-06',
-                  'REFIT_House2_2014-07',
-                  'REFIT_House2_2014-08',
-                  'REFIT_House2_2014-09',
-                  'REFIT_House2_2014-10',
-                  'REFIT_House2_2014-11',
-                  'REFIT_House2_2014-12',
-                  'REFIT_House2_2015-01',
-                  'REFIT_House2_2015-02',
-                  'REFIT_House2_2015-03',
-                  'REFIT_House2_2015-04',
-                  'REFIT_House2_2015-05',
-                  'REFIT_House20_2014-03',
-                  'REFIT_House20_2014-04',
-                  'REFIT_House20_2014-05',
-                  'REFIT_House20_2014-06',
-                  'REFIT_House20_2014-07',
-                  'REFIT_House20_2014-08',
-                  'REFIT_House20_2014-09',
-                  'REFIT_House20_2014-10',
-                  'REFIT_House20_2014-11',
-                  'REFIT_House20_2014-12',
-                  'REFIT_House20_2015-01',
-                  'REFIT_House20_2015-02',
-                  'REFIT_House20_2015-03',
-                  'REFIT_House20_2015-04',
-                  'REFIT_House20_2015-05',
-                  'REFIT_House20_2015-06']
+list_dataset   = ['UKDALE', 'REFIT', 'IDEAL']
+
+list_ukdale_ts = ['UKDALE_House2_2013-05', 'UKDALE_House2_2013-06', 'UKDALE_House2_2013-07', 'UKDALE_House2_2013-08', 'UKDALE_House2_2013-09', 'UKDALE_House2_2013-10']
+
+list_ideal_ts  = ['IDEAL_House65_2017-06', 'IDEAL_House65_2018-02', 'IDEAL_House65_2018-04', 'IDEAL_House175_2018-01']
+
+list_refit_ts  = ['REFIT_House2_2013-10', 'REFIT_House2_2013-11', 'REFIT_House2_2013-12', 'REFIT_House2_2014-01', 'REFIT_House2_2014-02', 'REFIT_House2_2014-03', 'REFIT_House2_2014-04', 'REFIT_House2_2014-05',
+                  'REFIT_House2_2014-06', 'REFIT_House2_2014-07', 'REFIT_House2_2014-08', 'REFIT_House2_2014-09', 'REFIT_House2_2014-10', 'REFIT_House2_2014-11', 'REFIT_House2_2014-12', 'REFIT_House2_2015-01',
+                  'REFIT_House20_2014-03', 'REFIT_House20_2014-04', 'REFIT_House20_2014-05', 'REFIT_House20_2014-06', 'REFIT_House20_2014-07', 'REFIT_House20_2014-08', 'REFIT_House20_2014-09', 'REFIT_House20_2014-10',
+                  'REFIT_House20_2014-11', 'REFIT_House20_2014-12', 'REFIT_House20_2015-01', 'REFIT_House20_2015-02', 'REFIT_House20_2015-03', 'REFIT_House20_2015-04', 'REFIT_House20_2015-05', 'REFIT_House20_2015-06']
