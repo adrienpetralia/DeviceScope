@@ -55,10 +55,6 @@ def run_metric_comparaison_frame():
     # st.plotly_chart(fig_benchmark, use_container_width=True)
 
 
-def run_visualnilmmodel_comparaison_frame():
-     st.markdown("To")
-
-
 
 def plot_benchmark_figures1(name_measure, dataset):
     table = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
@@ -271,7 +267,7 @@ def get_resnet_layers(resnet_name, resnet_inst):
 
 def get_soft_label_ensemble(current_win, path_ensemble_clf):
     resnet_type = 'ResNet3'
-    device = 'cpu'
+    device      = 'cpu'
 
     with open(f'{path_ensemble_clf}LogResNetsEnsemble.pkl', 'rb') as handle:
         dict_results = pickle.load(handle)
@@ -327,17 +323,19 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
         soft_label = soft_label / len(list_best_resnets)
 
         # Small moving average 
-        soft_label = moving_average(soft_label, w=5) # TODO: improve the hardcoding of Moving Average w parameter
+        soft_label = moving_average(soft_label, w=5)
         avg_cam    = np.copy(soft_label)
 
         # Sigmoid-Attention between input aggregate power and computed avg. CAM score
-        soft_label = sigmoid(soft_label * current_win)
+        soft_label = soft_label * current_win
+        soft_label_before_sig = np.copy(soft_label)
+        soft_label = sigmoid(soft_label)
         soft_label = np.round(soft_label)
     else: 
         soft_label = np.zeros_like(current_win)
         avg_cam    = np.zeros_like(current_win)
 
-    return prob_detect, soft_label, avg_cam
+    return prob_detect, soft_label, soft_label_before_sig, avg_cam
 
 
 def sigmoid(z):
@@ -348,12 +346,12 @@ def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
 
 
-def get_predi_nilmcam_one_appliance(dataset_name, window_agg, appliance):
+def get_pred_nilmcam_one_appliance(dataset_name, window_agg, appliance):
 
     path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/ResNetEnsemble/'
-    pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
+    pred_prob, soft_label, soft_label_before_sig, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
 
-    return {'pred_prob': pred_prob, 'pred_status': soft_label, 'avg_cam': avg_cam}
+    return {'pred_prob': pred_prob, 'pred_status': soft_label, 'soft_label_before_sig': soft_label_before_sig, 'avg_cam': avg_cam}
 
 
 def get_prediction_nilmbaselines_one_appliance(dataset_name, window_agg, appliance, model_list):
@@ -378,7 +376,7 @@ def pred_one_window_nilmcam(k, df, window_size, dataset_name, appliances):
 
     pred_dict = {}
     for appl in appliances:   
-        pred_dict[appl]  = get_predi_nilmcam_one_appliance(dataset_name, window_agg, appl)
+        pred_dict[appl]  = get_pred_nilmcam_one_appliance(dataset_name, window_agg, appl)
 
     return pred_dict
 
@@ -664,8 +662,8 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig.update_layout(
         title='Aggregate power consumption and predicted appliance localization',
         showlegend=False,
-        height=1000,
-        width=2000,
+        height=2000,
+        width=3000,
         margin=dict(l=100, r=20, t=30, b=40),
         **xaxis_title_dict
     )
