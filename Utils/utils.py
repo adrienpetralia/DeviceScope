@@ -573,7 +573,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
                              line=dict(color=dict_color_appliance[appliance])),
                   row=1, col=1)
 
-    fig.add_trace(go.Scatter(x=window_df.index, y=window_df[appliance], 
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df[appliance+'_Status'], 
                              mode='lines', 
                              name=appliance, fill='tozeroy', 
                              line=dict(color=dict_color_appliance[appliance])),
