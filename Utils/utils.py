@@ -228,6 +228,12 @@ def convert_length_to_window_size(length):
         raise ValueError("Length not recognized. Please use '6 hours', '12 hours', or '1 Day'.")
     
 
+@st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
+def get_pred_data(file):
+    data = pd.read_csv(file, parse_dates=['Time'], index_col=['Time'], compression='gzip')
+    return data
+
+@st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
 def get_time_series_data(ts_name, length):
     # Convert selected length to window_size
     window_size = convert_length_to_window_size(length)
