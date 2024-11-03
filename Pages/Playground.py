@@ -77,6 +77,8 @@ if len(appliances_selected) > 0:
         fig_sig = plot_signatures(appliances_selected)
         st.plotly_chart(fig_sig, use_container_width=True)
 
+    del df
+
 else:
     fig_ts = plot_one_window_agg(st.session_state.CURRENT_WINDOW, df, window_size)
     st.plotly_chart(fig_ts, use_container_width=True)
@@ -84,3 +86,5 @@ else:
     # Plot examples for all possible appliances
     fig_sig = plot_signatures(['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle', 'Shower'])
     st.plotly_chart(fig_sig, use_container_width=True)
+
+    del df
