@@ -69,7 +69,7 @@ with tab_benchmark:
 
     # Load the time series data
     #df, window_size = get_time_series_data(ts_name, length=length)
-    df, window_size = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip', length=length)
+    df, window_size = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House65_2018-02.gzip', length=length)
     n_win = len(df) // window_size
 
     # Ensure CURRENT_WINDOW_BENCHMARK stays within valid bounds
@@ -87,10 +87,8 @@ with tab_benchmark:
             unsafe_allow_html=True)
         
     pred_status_flag = st.toggle('Predict Status')
-
     
     #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
     pred_nilmcam = 0
     fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, 'Dishwasher', pred_nilmcam)
     st.plotly_chart(fig_comparaison, use_container_width=True)
-
