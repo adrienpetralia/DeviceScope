@@ -74,7 +74,8 @@ with tab_benchmark:
         dataset_name = 'IDEAL'
         
         pred = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip')
-        pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
+        #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
+        pred_nilmcam = 0
         fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, 'Dishwasher', pred_nilmcam)
         st.plotly_chart(fig_comparaison, use_container_width=True)
 
