@@ -558,7 +558,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig = make_subplots(rows=8, cols=1, 
                         shared_xaxes=True, vertical_spacing=0.1,
                         row_heights=list_row_heights,
-                        subplot_titles=[""]+to_plot)
+                        subplot_titles=['', f'{appliance} Status', 'BiGRU', 'UNet-NILM', 'TPNILM', 'TransNILM', 'CRNNStrong', 'CRNNWeak'])
     
     # Aggregate plot
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], 
