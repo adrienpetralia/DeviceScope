@@ -597,10 +597,11 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
 
 
     # Create subplots, shared x-axis
-    #list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(len(to_plot)-1)]
+    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(8)]
 
-    fig = make_subplots(rows=len(to_plot), cols=1, 
+    fig = make_subplots(rows=8, cols=1, 
                         shared_xaxes=True, vertical_spacing=0.1,
+                        row_heights=list_row_heights,
                         subplot_titles=[""]+to_plot)
     
     # Aggregate plot
@@ -613,15 +614,45 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df[appliance], 
                              mode='lines', 
                              name=appliance, fill='tozeroy', 
-                             line=dict(color='royalblue')),
+                             line=dict_color_appliance[appliance]),
                   row=1, col=1)
+
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df[appliance], 
+                             mode='lines', 
+                             name=appliance, fill='tozeroy', 
+                             line=dict_color_appliance[appliance]),
+                  row=2, col=1)
+
+
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['BiGRU'], mode='lines', 
+                                showlegend=False, name='BiGRU', 
+                                fill='tozeroy'), 
+                    row=3, col=1)
     
-    # Stacked CAM calculations
-    for z, model in enumerate(to_plot, start=1):
-        fig.add_trace(go.Scatter(x=window_df.index, y=window_df[model], mode='lines', 
-                                 showlegend=False, name=model.capitalize(), 
-                                 fill='tozeroy'), 
-                      row=z, col=1)
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['UNET_NILM'], mode='lines', 
+                                showlegend=False, name='UNet-NILM', 
+                                fill='tozeroy'), 
+                    row=4, col=1)
+    
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['TPNILM'], mode='lines', 
+                                showlegend=False, name='TPNILM', 
+                                fill='tozeroy'), 
+                    row=5, col=1)
+    
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['TransNILM'], mode='lines', 
+                                showlegend=False, name='TransNILM', 
+                                fill='tozeroy'), 
+                    row=6, col=1)
+    
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['CRNNStrong'], mode='lines', 
+                                showlegend=False, name='CRNN (Strong)', 
+                                fill='tozeroy'), 
+                    row=7, col=1)
+    
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['CRNNWeak'], mode='lines', 
+                                showlegend=False, name='CRNN (Weak)', 
+                                fill='tozeroy'), 
+                    row=8, col=1)
 
         # color = dict_color_appliance[appl]        
 
@@ -670,15 +701,15 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
         #     )
 
     # Update layout for the combined figure
-    # xaxis_title_dict = {f'xaxis{len(to_plot)+1}_title': 'Time'}
-    # fig.update_layout(
-    #     title='Aggregate power consumption and predicted appliance localization',
-    #     showlegend=False,
-    #     height=500,
-    #     width=1000,
-    #     margin=dict(l=100, r=20, t=30, b=40),
-    #     **xaxis_title_dict
-    # )
+    xaxis_title_dict = {f'xaxis{8}_title': 'Time'}
+    fig.update_layout(
+        title='Aggregate power consumption and predicted appliance localization',
+        showlegend=False,
+        height=500,
+        width=1000,
+        margin=dict(l=100, r=20, t=30, b=40),
+        **xaxis_title_dict
+    )
     
     
     fig.update_annotations(font=dict(family="Helvetica", size=15))
@@ -699,7 +730,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
         yaxis_title_y = 0.22
         
     shared_yaxis_title = {
-        'text': "Pred. App(s) Status",  # Update with your desired title
+        'text': "Model comparaison",  # Update with your desired title
         'showarrow': False,
         'xref': 'paper',
         'yref': 'paper',
