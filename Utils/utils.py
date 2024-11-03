@@ -676,7 +676,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
  
     # Update y-axis for the heatmap
-    for z in range(1, 9):
+    for z in range(2, 9):
         fig.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
 
     if len(to_plot)==4:
