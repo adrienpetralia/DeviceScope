@@ -32,6 +32,8 @@ with tab_benchmark:
             "Choose a load curve", list_dataset, index=0
         )
 
+    dataset_name = 'IDEAL'
+
     with col1_2:
         if dataset_name=='UKDALE':
             list_name_ts = list_ukdale_ts
@@ -55,7 +57,6 @@ with tab_benchmark:
         appliances_selected = st.multiselect(
             "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale,
         )
-    models = ['ResNetEnsemble']
 
 
     colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
@@ -67,7 +68,8 @@ with tab_benchmark:
             st.session_state.CURRENT_WINDOW_BENCHMARK += 1
 
     # Load the time series data
-    df, window_size = get_time_series_data(ts_name, length=length)
+    #df, window_size = get_time_series_data(ts_name, length=length)
+    df, window_size = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip', length=length)
     n_win = len(df) // window_size
 
     # Ensure CURRENT_WINDOW_BENCHMARK stays within valid bounds
@@ -86,11 +88,9 @@ with tab_benchmark:
         
     pred_status_flag = st.toggle('Predict Status')
 
-    dataset_name = 'IDEAL'
     
-    pred = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House175_2018-01.gzip')
     #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
     pred_nilmcam = 0
-    fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, 'Dishwasher', pred_nilmcam)
+    fig_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, 'Dishwasher', pred_nilmcam)
     st.plotly_chart(fig_comparaison, use_container_width=True)
 

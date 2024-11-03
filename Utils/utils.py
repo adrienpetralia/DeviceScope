@@ -225,9 +225,11 @@ def convert_length_to_window_size(length):
     
 
 @st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
-def get_pred_data(file):
+def get_pred_data(file, length):
+    # Convert selected length to window_size
+    window_size = convert_length_to_window_size(length)
     data = pd.read_csv(file, parse_dates=['Time'], index_col=['Time'], compression='gzip')
-    return data
+    return data, window_size
 
 @st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
 def get_time_series_data(ts_name, length):
