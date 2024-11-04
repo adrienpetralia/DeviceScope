@@ -59,10 +59,10 @@ with tab_playground:
 
     # Loop through each appliance and add its corresponding subplots
     for i, app in enumerate(df_res_bench['Case'].unique(), start=1):
-        df = df_res_bench.loc[df_res_bench['Case'] == app]
+        df_res_bench = df_res_bench.loc[df_res_bench['Case'] == app]
     
         # Detection Metric Plot (Clf_F1_SCORE)
-        win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_localization}'].mean().reset_index()
+        win_df_clf = df_res_bench.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_localization}'].mean().reset_index()
 
         fig.add_trace(
             go.Scatter(
@@ -78,7 +78,7 @@ with tab_playground:
         )
 
         # Classification Metric Plot (F1_SCORE)
-        win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[measure_localization].mean().reset_index()
+        win_df_clf = df_res_bench.groupby(['Win', 'WinTrainWeak'])[measure_localization].mean().reset_index()
 
         fig.add_trace(
             go.Scatter(
