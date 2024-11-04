@@ -342,11 +342,12 @@ def get_soft_label_ensemble(current_win, path_ensemble_clf):
         soft_label_before_sig = np.copy(soft_label)
         soft_label = sigmoid(soft_label)
         soft_label = np.round(soft_label)
-    else: 
-        soft_label = np.zeros_like(current_win)
-        avg_cam    = np.zeros_like(current_win)
 
-    return prob_detect, soft_label, soft_label_before_sig, avg_cam
+        return prob_detect, soft_label, soft_label_before_sig, avg_cam
+    else: 
+        return prob_detect, np.zeros_like(current_win), np.zeros_like(current_win), np.zeros_like(current_win)
+
+    
 
 
 def sigmoid(z):
