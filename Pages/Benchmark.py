@@ -57,6 +57,12 @@ with tab_benchmark:
         )
     #appliance_selected = 'Dishwasher'
 
+    st.markdown("""## Applicance localization performance comparaison according the number of label used for training""")
+    fig_perf_comparaison = plot_nilm_performance_comparaison('IDEAL', 'Dishwasher', 'F1_SCORE')
+    st.plotly_chart(fig_perf_comparaison, use_container_width=True)
+
+
+    st.markdown("""## Compare the results with NILM based model""")
     colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
     with colcontrol_1:
         if st.button(":rewind: **Prev.**", type="primary"):
@@ -86,8 +92,7 @@ with tab_benchmark:
     
     #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
     pred_nilmcam = 0
-    fig_perf_comparaison = plot_nilm_performance_comparaison('IDEAL', 'Dishwasher', 'F1_SCORE')
+    
     fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam)
-    st.plotly_chart(fig_perf_comparaison, use_container_width=True)
     pred_status_flag = st.toggle('Show probabilities')
     st.plotly_chart(fig_visu_comparaison, use_container_width=True)
