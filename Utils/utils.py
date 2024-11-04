@@ -55,7 +55,20 @@ def run_metric_comparaison_frame():
     # fig_benchmark = plot_benchmark_figures4(appliances2, measure, dataset)
     # st.plotly_chart(fig_benchmark, use_container_width=True)
 
+def plot_influence_win_train(df_res_bench, measure_detection):
+    # Calculate the average Clf_F1_SCORE for each appliance (Case) across different seeds
+    average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
 
+    # Plotting the average Clf_F1_Score for each appliance
+    fig = px.bar(average_f1_score, x='Case', y=f'Clf_{measure_detection}',
+                title=f'Average {dict_measure_to_display[measure_detection]} for the Appliances available in the dataset',
+                labels={f'Clf_{measure_detection}': f'Average {dict_measure_to_display[measure_detection]}', 'Case': 'Appliance'},
+                text=measure_detection)
+
+    fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig.update_layout(yaxis=dict(title=f'Average {dict_measure_to_display[measure_detection]}'), xaxis=dict(title='Appliance'))
+
+    return fig
 
 def plot_influence_win_train(df_res_bench, measure_detection, measure_localization):
     # Create a subplot figure with two columns and one row for each appliance
