@@ -13,6 +13,7 @@ from plotly.subplots import make_subplots
 
 # === Customs import === #
 from Utils.constants import *
+#from Utils.constants import *
 
 from Models.Classifiers.ResNet3 import ResNet3
 from Models.Classifiers.ResNet3LN import ResNet3LN
@@ -710,7 +711,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
 
 def plot_nilm_performance_comparaison(dataset, appliance, metric):
 
-    df = pd.read_csv('/home/I50280/devicescope/TableResults/IDEALResults.gzip', compression='gzip')
+    df = pd.read_csv(os.getcwd()+'TableResults/IDEALResults.gzip', compression='gzip')
 
     df_case = df.loc[df['Case']==appliance].copy()
     
