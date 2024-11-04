@@ -33,7 +33,7 @@ dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY'
 measure = dict_measure[measure]
 
 tab_playground, tab_benchmark = st.tabs(
-        ["NIMM-CAM performances", "Comparaison with NILM approaches"]
+        ["NILM-CAM performances", "Comparaison with NILM approaches"]
     )
     
 with tab_playground:

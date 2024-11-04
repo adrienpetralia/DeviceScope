@@ -2,7 +2,7 @@
 
 text_tab_playground = f"""
 # Playground
-Attempt to identify the selected appliances in the aggregate power by looking at the provided example patterns at the bottom of the frame or choose a classifier to detect and localize them automatically."""
+Attempt to identify the appliances in the aggregate power by looking at the provided example patterns at the bottom of the frame or select the ones you want automatically detect usiing our approach!"""
 
 text_tab_benchmark = f"""
 # Benchmark
@@ -19,8 +19,8 @@ Four houses were recorded for over a year and a half, while the 5th was recorded
 - [REFIT](https://pureportal.strath.ac.uk/en/datasets/refit-electrical-load-measurements-cleaned): The REFIT dataset contains data from 20 different houses in the United Kingdom that have been monitored with smart meters and multiple sensors. 
 This dataset provides aggregate and individual appliance load curves at 8-second sampling intervals. 
 
-- [IDEAL](https://www.nature.com/articles/s41597-021-00921-y): The IDEAL dataset contains data from 250 different houses in the United Kingdom that have been monitored with smart meters. 
-This dataset provides aggregate and individual appliance load curves at 8-second sampling intervals. 
+- [IDEAL](https://www.nature.com/articles/s41597-021-00921-y): The IDEAL dataset contains data from 255 different houses in the United Kingdom that have been monitored with smart meters.
+For a subgroup of 39, submeters data are available for different appliances.
 """
 
 text_description_model  = f"""
@@ -66,18 +66,7 @@ $$
 $$
 where $w_k$ are the weights of the $k^{th}$ filter associated to class $c$, and $f_k(t)$ are the inner features at a certain a timestamp $t$.
 It results in a univariate time series where each element (at the timestamp $t  \in [1, T ]$) equals the weighted sum of the data points at $t$, with the weights learned by the neural network and reflect the importance of each timestamp.
-
-**Attention Map:** With the advent of Transformer models in numerous domains, explainability methods have been proposed to visualize the insight of the self-attention mechanism and localize important features.
-As already investigated for image classification, we adapt the idea to univariate time series in this demonstration to localize discriminative regions using TransApp (the only classifier based on a Transformer architecture).
-This approach relies on looking at the weights of the attention matrix of a Transformer layer when an input instance is passed through the network.
-Note that, contrary to the CAM, the Attention Map cannot be extracted for a specific label.
-Therefore, in our proposed approach, we only extract the activation map of TransApp if an appliance is detected and set the value to 0 otherwise.
-Formally, the Attention Map is defined as:
-$$
-\text{AttMap(t)} = \text{softmax}(W \cdot F(t))
-$$
-where a softmax activation function is applied on the product of $F$, the inner feature matrix of the input series, and $W$, the learned attention weights.
-It results in a univariate time series where each value reflects the importance given by the self-attention to each timestamp $t \in [1, T ]$."""
+"""
 
 text_about = f"""
 ## Interactive detection and localization of appliance patterns in electricity consumption time series

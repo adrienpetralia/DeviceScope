@@ -28,7 +28,7 @@ st.markdown(
     """
 )
 
-st.image("Figures/logo.png", caption="Appliance Localization.")
+st.image("Figures/homepage_figure.png", caption="DeviceScope Appliance Localization")
 
 st.markdown(f"""
             1. **Explore** electricity consumption series.
