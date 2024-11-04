@@ -555,16 +555,16 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
 
 
 
-def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appliance):
+def plot_one_window_benchmark(k, df, window_size, appliance, pred_nilm_cam, pred_prob_flag):
     window_df = df.iloc[k*window_size: k*window_size + window_size]
     
     to_plot = list(df.columns)
 
 
     # Create subplots, shared x-axis
-    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(7)]
+    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(8)]
 
-    fig = make_subplots(rows=8, cols=1, 
+    fig = make_subplots(rows=9, cols=1, 
                         shared_xaxes=True, vertical_spacing=0.1,
                         row_heights=list_row_heights,
                         subplot_titles=['', f'{appliance} Status', 'BiGRU', 'UNet-NILM', 'TPNILM', 'TransNILM', 'CRNNStrong', 'CRNNWeak'])
@@ -590,91 +590,60 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
                              name=appliance, fill='tozeroy', 
                              line=dict(color=dict_color_appliance[appliance])),
                   row=2, col=1)
+    
 
-
-    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['BiGRU'], mode='lines', 
-                                showlegend=False, name='BiGRU', 
-                                fill='tozeroy'), 
+    fig.add_trace(go.Scatter(x=window_df.index, y=pred_nilm_cam['pred_status'] if not pred_prob_flag else pred_nilm_cam['avg_cam'], 
+                             mode='lines', 
+                             showlegend=False, name='NILM-CAM', 
+                             fill='tozeroy'), 
                     row=3, col=1)
-    
-    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['UNET_NILM'], mode='lines', 
-                                showlegend=False, name='UNet-NILM', 
-                                fill='tozeroy'), 
+
+
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['CRNNWeak'].round() if not pred_prob_flag else window_df['CRNNWeak'], 
+                             mode='lines', 
+                             showlegend=False, name='CRNN (Weak)', 
+                             fill='tozeroy'), 
                     row=4, col=1)
-    
-    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['TPNILM'], mode='lines', 
-                                showlegend=False, name='TPNILM', 
-                                fill='tozeroy'), 
+
+
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['BiGRU'].round() if not pred_prob_flag else window_df['BiGRU'], 
+                             mode='lines', 
+                             showlegend=False, name='BiGRU', 
+                             fill='tozeroy'), 
                     row=5, col=1)
     
-    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['TransNILM'], mode='lines', 
-                                showlegend=False, name='TransNILM', 
-                                fill='tozeroy'), 
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['UNET_NILM'].round() if not pred_prob_flag else window_df['UNET_NILM'], 
+                               mode='lines', 
+                               showlegend=False, name='UNet-NILM', 
+                               fill='tozeroy'), 
                     row=6, col=1)
     
-    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['CRNNStrong'], mode='lines', 
-                                showlegend=False, name='CRNN (Strong)', 
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['TPNILM'].round() if not pred_prob_flag else window_df['TPNILM'], 
+                             mode='lines', 
+                                showlegend=False, name='TPNILM', 
                                 fill='tozeroy'), 
                     row=7, col=1)
     
-    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['CRNNWeak'], mode='lines', 
-                             showlegend=False, name='CRNN (Weak)', 
-                             fill='tozeroy'), 
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['TransNILM'].round() if not pred_prob_flag else window_df['TransNILM'], 
+                             mode='lines', 
+                                showlegend=False, name='TransNILM', 
+                                fill='tozeroy'), 
                     row=8, col=1)
+    
+    fig.add_trace(go.Scatter(x=window_df.index, y=window_df['CRNNStrong'].round() if not pred_prob_flag else window_df['CRNNStrong'], 
+                             mode='lines', 
+                             showlegend=False, name='CRNN (Strong)', 
+                             fill='tozeroy'), 
+                    row=9, col=1)
 
-        # color = dict_color_appliance[appl]        
-
-        # if appl=='WashingMachine' or appl=='Dishwasher':
-        #     w=30
-        # else:
-        #     w=15
-
-        # pred_nilmcam_app = np.convolve(pred_nilmcam_app, np.ones(w), 'same') / w
-
-        # threshold = 0
-        # start_idx = None 
-
-        # for i, value in enumerate(pred_nilmcam_app):
-        #     if value > threshold and start_idx is None:  # CAM becomes active
-        #         start_idx = i
-        #     elif value <= threshold and start_idx is not None:  # End of an active segment
-        #         # Add shape for the active segment
-        #         fig_agg.add_shape(
-        #             type="rect",
-        #             x0=window_df.index[start_idx],  # Convert index to x-value as needed
-        #             y0=0,
-        #             x1=window_df.index[i],
-        #             y1=max(3000, np.max(window_df['Aggregate'].values) + 50),
-        #             line=dict(width=0),
-        #             fillcolor=color,
-        #             opacity=0.3,  # Adjust for desired transparency
-        #             layer="below",
-        #             row=1, col=1
-        #         )
-        #         start_idx = None  # Reset for next segment
-
-        # # Check if there's an active segment until the end
-        # if start_idx is not None:
-        #     fig_agg.add_shape(
-        #         type="rect",
-        #         x0=window_df.index[start_idx],
-        #         y0=0,
-        #         x1=window_df.index[-1],
-        #         y1=max(3000, np.max(window_df['Aggregate'].values) + 50),
-        #         line=dict(width=0),
-        #         fillcolor=color,
-        #         opacity=0.3,
-        #         layer="below",
-        #         row=1, col=1
-        #     )
 
     # Update layout for the combined figure
-    xaxis_title_dict = {f'xaxis{8}_title': 'Time'}
+    xaxis_title_dict = {f'xaxis{9}_title': 'Time'}
     fig.update_layout(
         title='Aggregate power consumption and predicted appliance localization',
         showlegend=False,
-        height=800,
-        margin=dict(l=100, r=20, t=30, b=40),
+        height=1000,
+        margin=dict(l=50, r=20, t=20, b=20),
         **xaxis_title_dict
     )
     
@@ -684,7 +653,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     fig.update_yaxes(title_text='Power (Watts)', row=1, col=1, range=[0, max(3000, np.max(window_df['Aggregate'].values) + 50)])
  
     # Update y-axis for the heatmap
-    for z in range(2, 9):
+    for z in range(2, 10):
         fig.update_yaxes(row=z, col=1, range=[0, 1], visible=False, showticklabels=False)
 
     if len(to_plot)==4:
@@ -695,6 +664,8 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
         yaxis_title_y = 0.25
     else:
         yaxis_title_y = 0.22
+
+    yaxis_title_y = 0.4
         
     shared_yaxis_title = {
         'text': "Model comparaison",  # Update with your desired title
@@ -702,7 +673,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
         'xref': 'paper',
         'yref': 'paper',
         'x': -0.05,
-        'y': yaxis_title_y,
+        'y':yaxis_title_y,
         'xanchor': 'center',
         'yanchor': 'middle',
         'textangle': -90,  # Rotate the text for vertical alignment

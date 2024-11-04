@@ -25,12 +25,15 @@ with col1_1:
         )
 
 with col1_2:
-    length = st.selectbox(
+    measure = st.selectbox(
         "Choose a measure:", measures_list, index=0
     )
 
+dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY', 'F1 Score': 'F1_SCORE'}
+measure = dict_measure[measure]
+
 tab_playground, tab_benchmark = st.tabs(
-        ["NIMMCam performances", "Comparaison with NILM approaches"]
+        ["NIMM-CAM performances", "Comparaison with NILM approaches"]
     )
     
 with tab_playground:
@@ -102,9 +105,7 @@ with tab_benchmark:
         
     
     
-    #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
-    pred_nilmcam = 0
-    
-    fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam)
-    pred_status_flag = st.toggle('Show probabilities')
+    pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, dataset_name, [appliance_selected])[appliance_selected]
+    pred_prob_flag = st.toggle('Show probabilities')
+    fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam, pred_prob_flag)
     st.plotly_chart(fig_visu_comparaison, use_container_width=True)
