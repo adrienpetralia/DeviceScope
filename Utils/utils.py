@@ -65,7 +65,7 @@ def plot_detection_score_for_dataset(df_res_bench, measure_detection):
                  y=f'Clf_{measure_detection}',
                  color='Case',
                  color_discrete_map=dict_color_appliance,
-                 title=f'Average {dict_measure_to_display[measure_detection]} for the Appliances available in the dataset',
+                 title=f'Detection {dict_measure_to_display[measure_detection]} for the Appliances available in the selected dataset',
                  labels={f'Clf_{measure_detection}': f'Average {dict_measure_to_display[measure_detection]}', 'Case': 'Appliance'},
                  text=f'Clf_{measure_detection}')
 
@@ -84,7 +84,7 @@ def plot_localization_score_for_dataset(df_res_bench, measure_localization):
                  y=f'{measure_localization}',
                  color='Case',
                  color_discrete_map=dict_color_appliance,
-                 title=f'Average {dict_measure_to_display[measure_localization]} for the Appliances available in the dataset',
+                 title=f'Localization {dict_measure_to_display[measure_localization]} for the Appliances available in the selected dataset',
                  labels={f'{measure_localization}': f'Average {dict_measure_to_display[measure_localization]}', 'Case': 'Appliance'},
                  text=measure_localization)
 
