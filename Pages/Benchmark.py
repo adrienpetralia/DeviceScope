@@ -34,7 +34,7 @@ with col1_2:
         "Choose a localization measure:", measures_list, index=2
     )
 
-dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY', 'F1 Score': 'F1_SCORE'}
+dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY', 'F1 Score': 'F1_SCORE', 'Precision': 'PRECISION', 'Recall': 'RECALL'}
 measure_detection    = dict_measure[measure_detection]
 measure_localization = dict_measure[measure_localization]
 
