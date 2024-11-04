@@ -50,9 +50,24 @@ with tab_playground:
 
     df_res_bench = get_bench_results(dataset_name)
 
-    fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
+    # Calculate the average Clf_F1_SCORE for each appliance (Case) across different seeds
+    average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
 
-    st.plotly_chart(fig_influence_win_train, use_container_width=True)
+    # Plotting the average Clf_F1_Score for each appliance
+    fig = px.bar(average_f1_score, x='Case', y=f'Clf_{measure_detection}',
+                title=f'Average {dict_measure_to_display[measure_detection]} for the Appliances available in the dataset',
+                labels={f'Clf_{measure_detection}': f'Average {dict_measure_to_display[measure_detection]}', 'Case': 'Appliance'},
+                text=measure_detection)
+
+    fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig.update_layout(yaxis=dict(title=f'Average {dict_measure_to_display[measure_detection]}'), xaxis=dict(title='Appliance'))
+
+    fig.show()
+    st.plotly_chart(fig, use_container_width=True)
+
+    #fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
+
+    #st.plotly_chart(fig_influence_win_train, use_container_width=True)
 
 
 
