@@ -18,7 +18,7 @@ if 'CURRENT_WINDOW_BENCHMARK' not in st.session_state:
 st.markdown(text_tab_benchmark)
 
 tab_playground, tab_benchmark = st.tabs(
-        ["Metrics Comparaison", "Visual Comparaison"]
+        ["Performances", "Comparaison with NILM approaches"]
     )
     
 with tab_playground:
@@ -69,7 +69,7 @@ with tab_benchmark:
 
     # Load the time series data
     #df, window_size = get_time_series_data(ts_name, length=length)
-    df, window_size = get_pred_data(os.getcwd()+'/Pred/IDEAL/Dishwasher/IDEAL_House65_2018-02.gzip', length=length)
+    df, window_size = get_pred_data(os.getcwd()+'/Pred/IDEAL/Shower/IDEAL_House65_2018-02.gzip', length=length)
     n_win = len(df) // window_size
 
     # Ensure CURRENT_WINDOW_BENCHMARK stays within valid bounds
@@ -77,7 +77,6 @@ with tab_benchmark:
         st.session_state.CURRENT_WINDOW_BENCHMARK = 0
     elif st.session_state.CURRENT_WINDOW_BENCHMARK < 0:
         st.session_state.CURRENT_WINDOW_BENCHMARK = n_win - 1
-
 
     # Display window range
     with colcontrol_2:
