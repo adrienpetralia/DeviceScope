@@ -50,15 +50,15 @@ with tab_playground:
 
     df_res_bench = get_bench_results(dataset_name)
 
-    fig_bench_detection = plot_detection_score_for_dataset(df_res_bench, measure_detection)
+    fig_bench_detection    = plot_detection_score_for_dataset(df_res_bench, measure_detection)
     st.plotly_chart(fig_bench_detection, use_container_width=True)
 
     fig_bench_localization = plot_localization_score_for_dataset(df_res_bench, measure_localization)
     st.plotly_chart(fig_bench_localization, use_container_width=True)
 
-    #fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
+    fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
 
-    #st.plotly_chart(fig_influence_win_train, use_container_width=True)
+    st.plotly_chart(fig_influence_win_train, use_container_width=True)
 
 
 
