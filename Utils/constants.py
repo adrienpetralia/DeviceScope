@@ -119,9 +119,7 @@ lengths_list   = ['6 hours', '12 hours', '1 Day']
 devices_list_refit_ukdale = ['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle']
 devices_list_ideal        = ['WashingMachine', 'Dishwasher', 'Shower']
 
-measures_list  = ['Accuracy', 'Balanced Accuracy', 'F1 Macro']
-
-dataset_list   = ['All', 'UKDALE', 'REFIT']
+measures_list  = ['Accuracy', 'Balanced Accuracy', 'F1 Macro', 'Precision', 'Recall']
 
 list_dataset   = ['UKDALE', 'REFIT', 'IDEAL']
 

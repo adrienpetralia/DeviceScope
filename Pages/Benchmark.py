@@ -44,16 +44,16 @@ with tab_benchmark:
     col2_1, col2_2 = st.columns(2)
 
     with col2_1:
-        length = st.selectbox(
-            "Choose the window length:", lengths_list, index=2
-        )
-    with col2_2:
         dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
                           'REFIT': devices_list_refit_ukdale,
                           'IDEAL': devices_list_ideal}
         
         appliance_selected = st.selectbox(
             "Choose devices:", dict_ts_device[dataset_name], index=0
+        )
+    with col2_2:
+        length = st.selectbox(
+            "Choose a measure:", measures_list, index=0
         )
     #appliance_selected = 'Dishwasher'
 
@@ -64,6 +64,10 @@ with tab_benchmark:
 
 
     st.markdown("""### Compare the results with NILM based model""")
+    length = st.selectbox(
+        "Choose the window length:", lengths_list, index=2
+    )
+
     colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
     with colcontrol_1:
         if st.button(":rewind: **Prev.**", type="primary"):
