@@ -29,7 +29,7 @@ with col1_2:
         "Choose a detection measure:", measures_list, index=0
     )
 
-with col1_2:
+with col1_3:
     measure_localization = st.selectbox(
         "Choose a localization measure:", measures_list, index=2
     )
