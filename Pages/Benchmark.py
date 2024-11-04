@@ -57,7 +57,7 @@ with tab_benchmark:
         )
     #appliance_selected = 'Dishwasher'
 
-    st.markdown("""### Applicance localization performance comparaison according the number of label used for training""")
+    st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
     fig_perf_comparaison = plot_nilm_performance_comparaison('IDEAL', 'Dishwasher', 'F1_SCORE')
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
