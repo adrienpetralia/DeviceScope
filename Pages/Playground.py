@@ -44,9 +44,7 @@ with col2_2:
         "Choose devices:", dict_ts_device[dataset_name],
     )
 
-
-models = ['ResNetEnsemble']
-
+    
 
 colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
 with colcontrol_1:

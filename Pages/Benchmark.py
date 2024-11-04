@@ -74,9 +74,15 @@ with tab_benchmark:
 
 
     st.markdown("""### Compare the results with NILM based model""")
-    length = st.selectbox(
-        "Choose the window length:", lengths_list, index=2
-    )
+
+    col3_1, col3_2 = st.columns(2)
+
+    with col3_1:
+        length = st.selectbox(
+            "Choose the window length:", lengths_list, index=2
+        )
+    with col3_2:
+        pred_prob_flag = st.toggle('Show probabilities')
 
     colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
     with colcontrol_1:
@@ -106,6 +112,5 @@ with tab_benchmark:
     
     
     pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, dataset_name, [appliance_selected])[appliance_selected]
-    pred_prob_flag = st.toggle('Show probabilities')
     fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam, pred_prob_flag)
     st.plotly_chart(fig_visu_comparaison, use_container_width=True)
