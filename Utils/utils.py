@@ -243,9 +243,16 @@ def get_time_series_data(ts_name, length):
     return df, window_size
 
 @st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
-def get_results(dataset):
+def get_bench_results_nilm(dataset):
     # Load dataframe
     df = pd.read_csv(os.getcwd()+f'/TableResults/{dataset}Results.gzip', compression='gzip')
+
+    return df
+
+@st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
+def get_bench_results(dataset):
+    # Load dataframe
+    df = pd.read_csv(os.getcwd()+f'/TableResults/{dataset}BenchResults.gzip', compression='gzip')
 
     return df
 
@@ -534,7 +541,7 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
         yaxis_title_y = 0.22
         
     shared_yaxis_title = {
-        'text': "Pred. App(s) Status",  # Update with your desired title
+        'text': "Pred. Status",  # Update with your desired title
         'showarrow': False,
         'xref': 'paper',
         'yref': 'paper',
@@ -703,8 +710,8 @@ def plot_nilm_performance_comparaison(df, dataset, appliance, metric):
                     size='TrainingTime', 
                     color='Model', 
                     symbol='Model', 
-                    title=f'{metric} vs NLabelTrain by Model for {appliance}', 
-                    labels={'Metric': metric, 'NLabelTrain': 'Number of Labels used for Training'},
+                    title=f'{dict_measure_to_display[metric]} vs number of labels used for training by each Model.', 
+                    labels={'Metric': dict_measure_to_display[metric], 'NLabelTrain': 'Number of Labels used for Training'},
                     hover_data=['Model', 'TrainingTime'])
     fig.update_traces(mode='markers+lines')
 

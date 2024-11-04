@@ -24,6 +24,8 @@ with col1_1:
             "Choose a dataset", list_dataset, index=0
         )
 
+dataset_name = 'IDEAL'
+
 with col1_2:
     measure_detection = st.selectbox(
         "Choose a detection measure:", measures_list, index=0
@@ -46,7 +48,65 @@ tab_playground, tab_benchmark = st.tabs(
 with tab_playground:
     st.markdown("### Appliance detection performance comparaison")
 
+    df_res_bench = get_bench_results_nilm(dataset_name)
+    num_apps = df_res_bench['Case'].nunique()
 
+    # Create a subplot figure with two columns and one row for each appliance
+    fig = make_subplots(
+        rows=1, cols=2, 
+        horizontal_spacing=0.1
+    )
+
+    # Loop through each appliance and add its corresponding subplots
+    for i, app in enumerate(df_res_bench['Case'].unique(), start=1):
+        df = df_res_bench.loc[df_res_bench['Case'] == app]
+    
+    # Detection Metric Plot (Clf_F1_SCORE)
+    win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_localization}'].mean().reset_index()
+
+    fig.add_trace(
+        go.Scatter(
+            x=win_df_clf['WinTrainWeak'], 
+            y=win_df_clf[f'Clf_{measure_detection}'], 
+            mode='lines', 
+            name=f'{app}',
+            legendgroup=f'{app}',  # Group by the same name to share color
+            marker_color=dict_color_appliance[app],
+            showlegend=True
+        ),
+        row=1, col=1
+    )
+
+    # Classification Metric Plot (F1_SCORE)
+    win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[measure_localization].mean().reset_index()
+
+    fig.add_trace(
+        go.Scatter(
+            x=win_df_clf['WinTrainWeak'], 
+            y=win_df_clf[measure_localization], 
+            mode='lines', 
+            name=f'{app}',
+            legendgroup=f'{app}',  # Group by the same name to share color
+            marker_color=dict_color_appliance[app],
+            showlegend=False
+        ),
+        row=1, col=2
+    )
+
+    # Update the layout of the figure
+    fig.update_layout(
+        height=400,  # Adjust the height based on the number of rows (each appliance gets two columns)
+        title=f'Accuracy vs WinTrainWeak for Different Appliances (Detection and Classification)',
+        showlegend=True
+    )
+
+    # Update axes titles for all subplots
+    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=1)
+    fig.update_yaxes(title_text=f'Clf_{measure_detection}', row=1, col=1)
+    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=2)
+    fig.update_yaxes(title_text=f'{measure_localization}', row=1, col=2)
+
+    fig.show()
 
 
 
@@ -54,18 +114,17 @@ with tab_playground:
 with tab_benchmark:
 
     dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
-                        'REFIT': devices_list_refit_ukdale,
-                        'IDEAL': devices_list_ideal}
+                      'REFIT': devices_list_refit_ukdale,
+                      'IDEAL': devices_list_ideal}
     
     appliance_selected = st.selectbox(
         "Select an appliance:", dict_ts_device[dataset_name], index=0
     )
 
-    #appliance_selected = 'Dishwasher'
 
     st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
-    df_res = get_results('IDEAL')
-    fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, 'IDEAL', appliance_selected, measure_localization)
+    df_res = get_bench_results_nilm(dataset_name)
+    fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, dataset_name, appliance_selected, measure_localization)
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 

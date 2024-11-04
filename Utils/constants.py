@@ -101,6 +101,8 @@ Work supported by EDF R&D and ANRT French program.
 # ========================== Colors ========================== #
 dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'brown', 'Kettle': 'orange', 'Microwave': 'grey'}
 dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'NILMCAM': 'peachpuff'}
+dict_measure_to_display = { 'ACCURACY': 'Accuracy', 'BALANCED_ACCURACY': 'Balanced Accuracy', 'F1_SCORE': 'F1 Score', 'RECALL': 'Recall', 'PRECISION': 'Precision'}
+
 
 # ========================== Lists ========================== #
 lengths_list   = ['6 hours', '12 hours', '1 Day']
