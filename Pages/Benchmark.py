@@ -50,62 +50,9 @@ with tab_playground:
 
     df_res_bench = get_bench_results(dataset_name)
 
-    # Create a subplot figure with two columns and one row for each appliance
-    fig = make_subplots(
-        rows=1, cols=2, 
-        horizontal_spacing=0.1
-    )
+    fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
 
-    # Loop through each appliance and add its corresponding subplots
-    for i, app in enumerate(df_res_bench['Case'].unique(), start=1):
-        df_res_bench_app = df_res_bench.loc[df_res_bench['Case']==app]
-    
-        # Detection Metric Plot (Clf_F1_SCORE)
-        win_df_clf = df_res_bench_app.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_detection}'].mean().reset_index()
-
-        fig.add_trace(
-            go.Scatter(
-                x=win_df_clf['WinTrainWeak'], 
-                y=win_df_clf[f'Clf_{measure_detection}'], 
-                mode='lines', 
-                name=f'{app}',
-                legendgroup=f'{app}',  # Group by the same name to share color
-                marker_color=dict_color_appliance[app],
-                showlegend=True
-            ),
-            row=1, col=1
-        )
-
-        # Classification Metric Plot (F1_SCORE)
-        win_df_clf = df_res_bench_app.groupby(['Win', 'WinTrainWeak'])[measure_localization].mean().reset_index()
-
-        fig.add_trace(
-            go.Scatter(
-                x=win_df_clf['WinTrainWeak'], 
-                y=win_df_clf[measure_localization], 
-                mode='lines', 
-                name=f'{app}',
-                legendgroup=f'{app}',  # Group by the same name to share color
-                marker_color=dict_color_appliance[app],
-                showlegend=False
-            ),
-            row=1, col=2
-        )
-
-    # Update the layout of the figure
-    fig.update_layout(
-        height=400,  # Adjust the height based on the number of rows (each appliance gets two columns)
-        title=f'Accuracy vs WinTrainWeak for Different Appliances (Detection and Classification)',
-        showlegend=True
-    )
-
-    # Update axes titles for all subplots
-    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=1)
-    fig.update_yaxes(title_text=f'Clf_{measure_detection}', row=1, col=1)
-    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=2)
-    fig.update_yaxes(title_text=f'{measure_localization}', row=1, col=2)
-
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig_influence_win_train, use_container_width=True)
 
 
 

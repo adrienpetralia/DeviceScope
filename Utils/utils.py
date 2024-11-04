@@ -57,29 +57,62 @@ def run_metric_comparaison_frame():
 
 
 
-def plot_benchmark_figures1(name_measure, dataset):
-    table = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
-    if dataset != 'All':
-        table = table.loc[table['Dataset'] == dataset]
+def plot_influence_win_train(df_res_bench, measure_detection, measure_localization):
+    # Create a subplot figure with two columns and one row for each appliance
+    fig = make_subplots(
+        rows=1, cols=2, 
+        horizontal_spacing=0.1
+    )
 
-    dict_measure = {'Accuracy': 'Acc', 'Balanced Accuracy': 'Acc_Balanced', 'F1 Macro': 'F1_Macro'}
-    measure = dict_measure[name_measure]
-
-    table = table[['Models'] + [measure]].groupby(['Models'], as_index=False).mean()
-
-    table = table.sort_values(measure)
-
-    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff'}
-
-
-    min_val = table[measure].values.flatten().min()
-    fig = px.bar(table, x='Models', y=measure, labels={measure: name_measure},
-                 color='Models', 
-                 color_discrete_map=dict_color_model, 
-                 range_y=[min(0.5, round(min_val-0.1)), 1],
-                 height=400,
-                 title='Overall models performance for selected dataset')
+    # Loop through each appliance and add its corresponding subplots
+    for i, app in enumerate(df_res_bench['Case'].unique(), start=1):
+        df_res_bench_app = df_res_bench.loc[df_res_bench['Case']==app]
     
+        # Detection Metric Plot (Clf_F1_SCORE)
+        win_df_clf = df_res_bench_app.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_detection}'].mean().reset_index()
+
+        fig.add_trace(
+            go.Scatter(
+                x=win_df_clf['WinTrainWeak'], 
+                y=win_df_clf[f'Clf_{measure_detection}'], 
+                mode='lines', 
+                name=f'{app}',
+                legendgroup=f'{app}',  # Group by the same name to share color
+                marker_color=dict_color_appliance[app],
+                showlegend=True
+            ),
+            row=1, col=1
+        )
+
+        # Classification Metric Plot (F1_SCORE)
+        win_df_clf = df_res_bench_app.groupby(['Win', 'WinTrainWeak'])[measure_localization].mean().reset_index()
+
+        fig.add_trace(
+            go.Scatter(
+                x=win_df_clf['WinTrainWeak'], 
+                y=win_df_clf[measure_localization], 
+                mode='lines', 
+                name=f'{app}',
+                legendgroup=f'{app}',  # Group by the same name to share color
+                marker_color=dict_color_appliance[app],
+                showlegend=False
+            ),
+            row=1, col=2
+        )
+
+    # Update the layout of the figure
+    fig.update_layout(
+        height=400,  # Adjust the height based on the number of rows (each appliance gets two columns)
+        title=f'Accuracy vs WinTrainWeak for Different Appliances (Detection and Classification)',
+        showlegend=True
+    )
+
+    # Update axes titles for all subplots
+    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=1)
+    fig.update_yaxes(title_text=f'Clf_{measure_detection}', row=1, col=1)
+    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=2)
+    fig.update_yaxes(title_text=f'{measure_localization}', row=1, col=2)
+
     return fig
 
 def plot_benchmark_figures2(name_measure, dataset):
