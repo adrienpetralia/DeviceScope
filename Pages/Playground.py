@@ -39,11 +39,12 @@ with col2_2:
     dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
                           'REFIT': devices_list_refit_ukdale,
                           'IDEAL': devices_list_ideal}
-        
-    appliances_selected = st.selectbox(
-        "Choose devices:", dict_ts_device[dataset_name], index=0
+    
+    appliances_selected = st.multiselect(
+        "Choose devices:", dict_ts_device[dataset_name],
     )
-        
+
+
 models = ['ResNetEnsemble']
 
 
