@@ -17,7 +17,7 @@ if 'CURRENT_WINDOW_BENCHMARK' not in st.session_state:
 
 st.markdown(text_tab_benchmark)
 
-col1_1, col1_2, col1_3 = st.columns(2)
+col1_1, col1_2, col1_3 = st.columns(3)
 
 with col1_1:
         dataset_name = st.selectbox(
