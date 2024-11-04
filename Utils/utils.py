@@ -563,7 +563,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_nilm_cam, pred
 
 
     # Create subplots, shared x-axis
-    list_row_heights = [0.6] + [0.4/len(to_plot) for _ in range(8)]
+    list_row_heights = [0.3] + [0.7/8 for _ in range(9)]
 
     fig = make_subplots(rows=9, cols=1, 
                         shared_xaxes=True, # vertical_spacing=0.1,
