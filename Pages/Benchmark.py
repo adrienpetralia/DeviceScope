@@ -34,16 +34,11 @@ with tab_benchmark:
         )
 
     with col1_2:
-        if dataset_name=='UKDALE':
-            list_name_ts = list_ukdale_ts
-        elif dataset_name=='REFIT':
-            list_name_ts = list_refit_ts
-        elif dataset_name=='IDEAL':
-            list_name_ts = list_ukdale_ts
-        else:
-            raise ValueError('Wrong dataset name.')
+        dict_ts_list = {'UKDALE': list_ukdale_ts,
+                        'REFIT': list_refit_ts,
+                        'IDEAL': list_ideal_ts}
         ts_name = st.selectbox(
-            "Choose a load curve", list_name_ts, index=0
+            "Choose a load curve", dict_ts_list[dataset_name], index=0
         )
 
     col2_1, col2_2 = st.columns(2)
@@ -53,14 +48,18 @@ with tab_benchmark:
             "Choose the window length:", lengths_list, index=2
         )
     with col2_2:
+        dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
+                          'REFIT': devices_list_refit_ukdale,
+                          'IDEAL': devices_list_ideal}
+        
         appliance_selected = st.selectbox(
-            "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale, index=0
+            "Choose devices:", dict_ts_device[dataset_name], index=0
         )
     #appliance_selected = 'Dishwasher'
 
     st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
-    df = get_results(dataset_name)
-    fig_perf_comparaison = plot_nilm_performance_comparaison(df, 'IDEAL', 'Dishwasher', 'F1_SCORE')
+    df_res = get_results(dataset_name)
+    fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, 'IDEAL', 'Dishwasher', 'F1_SCORE')
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 
