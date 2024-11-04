@@ -242,6 +242,14 @@ def get_time_series_data(ts_name, length):
 
     return df, window_size
 
+@st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
+def get_results(dataset):
+    # Load dataframe
+    df = pd.read_csv(os.getcwd()+f'/TableResults/{dataset}Results.gzip', compression='gzip')
+
+    return df
+
+
 def get_resnet_instance(resnet_name, kernel_size, **kwargs):
     if resnet_name =='ResNet3':
         inst = ResNet3(kernel_sizes=[kernel_size, 7, 3], **kwargs)
@@ -709,10 +717,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     return fig
 
 
-def plot_nilm_performance_comparaison(dataset, appliance, metric):
-
-    df = pd.read_csv(os.getcwd()+'/TableResults/IDEALResults.gzip', compression='gzip')
-
+def plot_nilm_performance_comparaison(df, dataset, appliance, metric):
     df_case = df.loc[df['Case']==appliance].copy()
     
     order = [f'{p}DataForTrain' for p in [0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 'AllPossible']] + ['All']
@@ -727,8 +732,8 @@ def plot_nilm_performance_comparaison(dataset, appliance, metric):
                     color='Model', 
                     symbol='Model', 
                     title=f'{metric} vs NLabelTrain by Model for {appliance}', 
-                    labels={'Metric': metric, 'NLabelTrain': 'Number of Labels Trained'},
-                    hover_data=['Model', 'NHouseTrain', 'TrainingTime'])
+                    labels={'Metric': metric, 'NLabelTrain': 'Number of Labels used for Training'},
+                    hover_data=['Model', 'TrainingTime'])
     fig.update_traces(mode='markers+lines')
 
     return fig

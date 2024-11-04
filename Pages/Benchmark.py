@@ -22,7 +22,8 @@ tab_playground, tab_benchmark = st.tabs(
     )
     
 with tab_playground:
-    run_metric_comparaison_frame()
+    #run_metric_comparaison_frame()
+    st.markdown("TODO")
 
 with tab_benchmark:
     col1_1, col1_2 = st.columns(2)
@@ -58,7 +59,8 @@ with tab_benchmark:
     #appliance_selected = 'Dishwasher'
 
     st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
-    fig_perf_comparaison = plot_nilm_performance_comparaison('IDEAL', 'Dishwasher', 'F1_SCORE')
+    df = get_results(dataset_name)
+    fig_perf_comparaison = plot_nilm_performance_comparaison(df, 'IDEAL', 'Dishwasher', 'F1_SCORE')
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 
