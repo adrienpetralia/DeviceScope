@@ -711,7 +711,7 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
 
 def plot_nilm_performance_comparaison(dataset, appliance, metric):
 
-    df = pd.read_csv(os.getcwd()+'TableResults/IDEALResults.gzip', compression='gzip')
+    df = pd.read_csv(os.getcwd()+'/TableResults/IDEALResults.gzip', compression='gzip')
 
     df_case = df.loc[df['Case']==appliance].copy()
     
