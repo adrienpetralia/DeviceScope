@@ -67,7 +67,7 @@ def plot_detection_score_for_dataset(df_res_bench, measure_detection):
                  color_discrete_map=dict_color_appliance,
                  title=f'Average {dict_measure_to_display[measure_detection]} for the Appliances available in the dataset',
                  labels={f'Clf_{measure_detection}': f'Average {dict_measure_to_display[measure_detection]}', 'Case': 'Appliance'},
-                 text=measure_detection)
+                 text=f'Clf_{measure_detection}')
 
     fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
     fig.update_layout(yaxis=dict(title=f'Average {dict_measure_to_display[measure_detection]}'), xaxis=dict(title='Appliance'))
