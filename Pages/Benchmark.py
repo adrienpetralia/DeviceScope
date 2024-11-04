@@ -30,7 +30,7 @@ with tab_benchmark:
 
     with col1_1:
         dataset_name = st.selectbox(
-            "Choose a load curve", list_dataset, index=0
+            "Choose a load dataset", list_dataset, index=0
         )
 
     with col1_2:
@@ -58,7 +58,7 @@ with tab_benchmark:
     #appliance_selected = 'Dishwasher'
 
     st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
-    df_res = get_results(dataset_name)
+    df_res = get_results('IDEAL')
     fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, 'IDEAL', 'Dishwasher', 'F1_SCORE')
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
