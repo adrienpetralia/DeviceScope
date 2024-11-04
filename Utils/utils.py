@@ -55,7 +55,7 @@ def run_metric_comparaison_frame():
     # fig_benchmark = plot_benchmark_figures4(appliances2, measure, dataset)
     # st.plotly_chart(fig_benchmark, use_container_width=True)
 
-def plot_influence_win_train(df_res_bench, measure_detection):
+def plot_detection_score_for_dataset(df_res_bench, measure_detection):
     # Calculate the average Clf_F1_SCORE for each appliance (Case) across different seeds
     average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
 
@@ -67,6 +67,21 @@ def plot_influence_win_train(df_res_bench, measure_detection):
 
     fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
     fig.update_layout(yaxis=dict(title=f'Average {dict_measure_to_display[measure_detection]}'), xaxis=dict(title='Appliance'))
+
+    return fig
+
+def plot_localization_score_for_dataset(df_res_bench, measure_localization):
+    # Calculate the average Clf_F1_SCORE for each appliance (Case) across different seeds
+    average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
+
+    # Plotting the average Clf_F1_Score for each appliance
+    fig = px.bar(average_f1_score, x='Case', y=f'{measure_localization}',
+                title=f'Average {dict_measure_to_display[measure_localization]} for the Appliances available in the dataset',
+                labels={f'{measure_localization}': f'Average {dict_measure_to_display[measure_localization]}', 'Case': 'Appliance'},
+                text=measure_localization)
+
+    fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig.update_layout(yaxis=dict(title=f'Average {dict_measure_to_display[measure_localization]}'), xaxis=dict(title='Appliance'))
 
     return fig
 

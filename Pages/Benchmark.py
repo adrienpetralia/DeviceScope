@@ -50,7 +50,7 @@ with tab_playground:
 
     df_res_bench = get_bench_results(dataset_name)
 
-    fig = plot_influence_win_train(df_res_bench, measure_detection)
+    fig = plot_detection_score_for_dataset(df_res_bench, measure_detection)
 
     st.plotly_chart(fig, use_container_width=True)
 
