@@ -36,10 +36,14 @@ with col2_1:
         "Choose the window length:", lengths_list, index=2
     )
 with col2_2:
-    appliances_selected = st.multiselect(
-        "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale,
+    dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
+                          'REFIT': devices_list_refit_ukdale,
+                          'IDEAL': devices_list_ideal}
+        
+    appliances_selected = st.selectbox(
+        "Choose devices:", dict_ts_device[dataset_name], index=0
     )
-
+        
 models = ['ResNetEnsemble']
 
 
