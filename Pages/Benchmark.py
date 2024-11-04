@@ -48,7 +48,7 @@ tab_playground, tab_benchmark = st.tabs(
 with tab_playground:
     st.markdown("### Appliance detection performance comparaison")
 
-    df_res_bench = get_bench_results_nilm(dataset_name)
+    df_res_bench = get_bench_results(dataset_name)
     num_apps = df_res_bench['Case'].nunique()
 
     # Create a subplot figure with two columns and one row for each appliance
