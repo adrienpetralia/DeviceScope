@@ -53,8 +53,9 @@ with tab_benchmark:
         )
     with col2_2:
         appliance_selected = st.multiselect(
-            "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale, index=0
+            "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale, default='Dishwasher'
         )
+    appliance_selected = 'Dishwasher'
 
     colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
     with colcontrol_1:
