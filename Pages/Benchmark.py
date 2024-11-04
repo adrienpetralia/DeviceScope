@@ -17,23 +17,35 @@ if 'CURRENT_WINDOW_BENCHMARK' not in st.session_state:
 
 st.markdown(text_tab_benchmark)
 
+col1_1, col1_2 = st.columns(2)
+
+with col1_1:
+        dataset_name = st.selectbox(
+            "Choose a dataset", list_dataset, index=0
+        )
+
+with col1_2:
+    length = st.selectbox(
+        "Choose a measure:", measures_list, index=0
+    )
+
 tab_playground, tab_benchmark = st.tabs(
-        ["Performances", "Comparaison with NILM approaches"]
+        ["NIMMCam performances", "Comparaison with NILM approaches"]
     )
     
 with tab_playground:
-    #run_metric_comparaison_frame()
-    st.markdown("TODO")
+    st.markdown("### Appliance detection performance comparaison")
+
+
+
+
+
 
 with tab_benchmark:
-    col1_1, col1_2 = st.columns(2)
 
-    with col1_1:
-        dataset_name = st.selectbox(
-            "Choose a load dataset", list_dataset, index=0
-        )
+    col2_1, col2_2 = st.columns(2)
 
-    with col1_2:
+    with col2_1:
         dict_ts_list = {'UKDALE': list_ukdale_ts,
                         'REFIT': list_refit_ts,
                         'IDEAL': list_ideal_ts}
@@ -41,9 +53,7 @@ with tab_benchmark:
             "Choose a load curve", dict_ts_list[dataset_name], index=0
         )
 
-    col2_1, col2_2 = st.columns(2)
-
-    with col2_1:
+    with col2_2:
         dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
                           'REFIT': devices_list_refit_ukdale,
                           'IDEAL': devices_list_ideal}
@@ -51,10 +61,7 @@ with tab_benchmark:
         appliance_selected = st.selectbox(
             "Choose devices:", dict_ts_device[dataset_name], index=0
         )
-    with col2_2:
-        length = st.selectbox(
-            "Choose a measure:", measures_list, index=0
-        )
+
     #appliance_selected = 'Dishwasher'
 
     st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
