@@ -708,6 +708,30 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_dict_all_appli
     return fig
 
 
+def plot_nilm_performance_comparaison(dataset, appliance, metric):
+
+    df = pd.read_csv('/home/I50280/devicescope/TableResults/IDEALResults.gzip', compression='gzip')
+
+    df_case = df.loc[df['Case']==appliance].copy()
+    
+    order = [f'{p}DataForTrain' for p in [0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 'AllPossible']] + ['All']
+    df_case['OrderPercDataTrain'] = pd.Categorical(df_case['PercDataTrain'], categories=order, ordered=True)
+    df_case = df_case.sort_values(['Model', 'OrderPercDataTrain'])
+
+    fig = px.scatter(df_case, 
+                    x='NLabelTrain',
+                    log_x=True,
+                    y=metric, 
+                    size='TrainingTime', 
+                    color='Model', 
+                    symbol='Model', 
+                    title=f'{metric} vs NLabelTrain by Model for {appliance}', 
+                    labels={'Metric': metric, 'NLabelTrain': 'Number of Labels Trained'},
+                    hover_data=['Model', 'NHouseTrain', 'TrainingTime'])
+    fig.update_traces(mode='markers+lines')
+
+    return fig
+
 
 def plot_detection_probabilities(data):
     # Determine the number of appliances to plot
