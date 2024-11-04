@@ -62,9 +62,7 @@ with tab_playground:
         df_res_bench = df_res_bench.loc[df_res_bench['Case'] == app]
     
         # Detection Metric Plot (Clf_F1_SCORE)
-        win_df_clf = df_res_bench.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_localization}'].mean().reset_index()
-
-        st.write(win_df_clf)
+        win_df_clf = df_res_bench.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_detection}'].mean().reset_index()
 
         fig.add_trace(
             go.Scatter(
