@@ -46,24 +46,13 @@ with tab_playground:
 
 with tab_benchmark:
 
-    col2_1, col2_2 = st.columns(2)
-
-    with col2_1:
-        dict_ts_list = {'UKDALE': list_ukdale_ts,
-                        'REFIT': list_refit_ts,
-                        'IDEAL': list_ideal_ts}
-        ts_name = st.selectbox(
-            "Choose a load curve", dict_ts_list[dataset_name], index=0
-        )
-
-    with col2_2:
-        dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
-                          'REFIT': devices_list_refit_ukdale,
-                          'IDEAL': devices_list_ideal}
-        
-        appliance_selected = st.selectbox(
-            "Choose devices:", dict_ts_device[dataset_name], index=0
-        )
+    dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
+                        'REFIT': devices_list_refit_ukdale,
+                        'IDEAL': devices_list_ideal}
+    
+    appliance_selected = st.selectbox(
+        "Select an appliance:", dict_ts_device[dataset_name], index=0
+    )
 
     #appliance_selected = 'Dishwasher'
 
@@ -82,7 +71,13 @@ with tab_benchmark:
             "Choose the window length:", lengths_list, index=2
         )
     with col3_2:
-        pred_prob_flag = st.toggle('Show probabilities')
+        dict_ts_list = {'UKDALE': list_ukdale_ts,
+                        'REFIT': list_refit_ts,
+                        'IDEAL': list_ideal_ts}
+        ts_name = st.selectbox(
+            "Choose a load curve", dict_ts_list[dataset_name], index=0
+        )
+
 
     colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
     with colcontrol_1:
@@ -110,6 +105,7 @@ with tab_benchmark:
             unsafe_allow_html=True)
         
     
+    pred_prob_flag = st.toggle('Show probabilities')
     
     pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, dataset_name, [appliance_selected])[appliance_selected]
     fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam, pred_prob_flag)

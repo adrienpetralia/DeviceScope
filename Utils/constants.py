@@ -2,7 +2,7 @@
 
 text_tab_playground = f"""
 # Playground
-Attempt to identify the appliances in the aggregate power by looking at the provided example patterns at the bottom of the frame or select the ones you want automatically detect usiing our approach!"""
+Attempt to identify the appliances in the aggregate power by looking at the provided example patterns at the bottom of the frame or select the ones you want automatically detect using DeviceScope!"""
 
 text_tab_benchmark = f"""
 # Benchmark
