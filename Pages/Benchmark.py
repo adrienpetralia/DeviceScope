@@ -34,7 +34,8 @@ with col1_3:
         "Choose a localization measure:", measures_list, index=2
     )
 
-dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY', 'F1 Score': 'F1_SCORE', 'Precision': 'PRECISION', 'Recall': 'RECALL'}
+dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY', 
+                'F1 Score': 'F1_SCORE', 'Precision': 'PRECISION', 'Recall': 'RECALL'}
 measure_detection    = dict_measure[measure_detection]
 measure_localization = dict_measure[measure_localization]
 
@@ -64,7 +65,7 @@ with tab_benchmark:
 
     st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
     df_res = get_results('IDEAL')
-    fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, 'IDEAL', 'Dishwasher', measure_localization)
+    fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, 'IDEAL', appliance_selected, measure_localization)
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 
