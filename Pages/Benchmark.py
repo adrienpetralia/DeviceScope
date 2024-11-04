@@ -17,7 +17,7 @@ if 'CURRENT_WINDOW_BENCHMARK' not in st.session_state:
 
 st.markdown(text_tab_benchmark)
 
-col1_1, col1_2 = st.columns(2)
+col1_1, col1_2, col1_3 = st.columns(2)
 
 with col1_1:
         dataset_name = st.selectbox(
@@ -25,12 +25,18 @@ with col1_1:
         )
 
 with col1_2:
-    measure = st.selectbox(
-        "Choose a measure:", measures_list, index=0
+    measure_detection = st.selectbox(
+        "Choose a detection measure:", measures_list, index=0
+    )
+
+with col1_2:
+    measure_localization = st.selectbox(
+        "Choose a localization measure:", measures_list, index=2
     )
 
 dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY', 'F1 Score': 'F1_SCORE'}
-measure = dict_measure[measure]
+measure_detection    = dict_measure[measure_detection]
+measure_localization = dict_measure[measure_localization]
 
 tab_playground, tab_benchmark = st.tabs(
         ["NILM-CAM performances", "Comparaison with NILM approaches"]
@@ -58,7 +64,7 @@ with tab_benchmark:
 
     st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
     df_res = get_results('IDEAL')
-    fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, 'IDEAL', 'Dishwasher', 'F1_SCORE')
+    fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, 'IDEAL', 'Dishwasher', measure_localization)
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 
@@ -105,8 +111,8 @@ with tab_benchmark:
             unsafe_allow_html=True)
         
     
-    pred_prob_flag = st.toggle('Show probabilities')
+    pred_prob_flag = st.toggle('Display probabilities instead of status')
     
-    pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, dataset_name, [appliance_selected])[appliance_selected]
+    pred_nilmcam         = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, dataset_name, [appliance_selected])[appliance_selected]
     fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam, pred_prob_flag)
     st.plotly_chart(fig_visu_comparaison, use_container_width=True)
