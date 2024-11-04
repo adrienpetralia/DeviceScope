@@ -61,37 +61,37 @@ with tab_playground:
     for i, app in enumerate(df_res_bench['Case'].unique(), start=1):
         df = df_res_bench.loc[df_res_bench['Case'] == app]
     
-    # Detection Metric Plot (Clf_F1_SCORE)
-    win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_localization}'].mean().reset_index()
+        # Detection Metric Plot (Clf_F1_SCORE)
+        win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[f'Clf_{measure_localization}'].mean().reset_index()
 
-    fig.add_trace(
-        go.Scatter(
-            x=win_df_clf['WinTrainWeak'], 
-            y=win_df_clf[f'Clf_{measure_detection}'], 
-            mode='lines', 
-            name=f'{app}',
-            legendgroup=f'{app}',  # Group by the same name to share color
-            marker_color=dict_color_appliance[app],
-            showlegend=True
-        ),
-        row=1, col=1
-    )
+        fig.add_trace(
+            go.Scatter(
+                x=win_df_clf['WinTrainWeak'], 
+                y=win_df_clf[f'Clf_{measure_detection}'], 
+                mode='lines', 
+                name=f'{app}',
+                legendgroup=f'{app}',  # Group by the same name to share color
+                marker_color=dict_color_appliance[app],
+                showlegend=True
+            ),
+            row=1, col=1
+        )
 
-    # Classification Metric Plot (F1_SCORE)
-    win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[measure_localization].mean().reset_index()
+        # Classification Metric Plot (F1_SCORE)
+        win_df_clf = df.groupby(['Win', 'WinTrainWeak'])[measure_localization].mean().reset_index()
 
-    fig.add_trace(
-        go.Scatter(
-            x=win_df_clf['WinTrainWeak'], 
-            y=win_df_clf[measure_localization], 
-            mode='lines', 
-            name=f'{app}',
-            legendgroup=f'{app}',  # Group by the same name to share color
-            marker_color=dict_color_appliance[app],
-            showlegend=False
-        ),
-        row=1, col=2
-    )
+        fig.add_trace(
+            go.Scatter(
+                x=win_df_clf['WinTrainWeak'], 
+                y=win_df_clf[measure_localization], 
+                mode='lines', 
+                name=f'{app}',
+                legendgroup=f'{app}',  # Group by the same name to share color
+                marker_color=dict_color_appliance[app],
+                showlegend=False
+            ),
+            row=1, col=2
+        )
 
     # Update the layout of the figure
     fig.update_layout(
@@ -106,7 +106,7 @@ with tab_playground:
     fig.update_xaxes(title_text="WinTrainWeak", row=1, col=2)
     fig.update_yaxes(title_text=f'{measure_localization}', row=1, col=2)
 
-    fig.show()
+    st.plotly_chart(fig, use_container_width=True)
 
 
 
