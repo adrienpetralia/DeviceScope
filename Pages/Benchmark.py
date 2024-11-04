@@ -82,11 +82,12 @@ with tab_benchmark:
             df.iloc[st.session_state.CURRENT_WINDOW_BENCHMARK * window_size: (st.session_state.CURRENT_WINDOW_BENCHMARK + 1) * window_size].index[-1]),
             unsafe_allow_html=True)
         
-    pred_status_flag = st.toggle('Predict Status')
+    
     
     #pred_nilmcam    = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, pred, window_size, dataset_name, [appliance_selected])
     pred_nilmcam = 0
     fig_perf_comparaison = plot_nilm_performance_comparaison('IDEAL', 'Dishwasher', 'F1_SCORE')
     fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam)
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
+    pred_status_flag = st.toggle('Show probabilities')
     st.plotly_chart(fig_visu_comparaison, use_container_width=True)
