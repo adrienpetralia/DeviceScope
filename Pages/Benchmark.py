@@ -52,10 +52,10 @@ with tab_benchmark:
             "Choose the window length:", lengths_list, index=2
         )
     with col2_2:
-        appliance_selected = st.multiselect(
-            "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale, default='Dishwasher'
+        appliance_selected = st.selectbox(
+            "Choose devices:", devices_list_ideal if dataset_list=='IDEAL' else devices_list_refit_ukdale, index=0
         )
-    appliance_selected = 'Dishwasher'
+    #appliance_selected = 'Dishwasher'
 
     colcontrol_1, colcontrol_2, colcontrol_3 = st.columns([0.2, 0.8, 0.2])
     with colcontrol_1:
