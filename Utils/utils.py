@@ -23,41 +23,10 @@ from Models.Classifiers.ResNet5LN import ResNet5LN
 from Helpers.class_activation_map import CAM
         
 
-def run_metric_comparaison_frame():
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        measure = st.selectbox(
-        "Choose metric", measures_list, index=0
-    )
-    with col2:
-        dataset = st.selectbox(
-        "Choose dataset", dataset_list, index=0
-    )
-
-    #st.markdown("#### Overall results")
-
-    fig1 = plot_benchmark_figures1(measure, dataset)
-    fig2 = plot_benchmark_figures2(measure, dataset)
-    fig3 = plot_benchmark_figures3(measure, dataset)
-
-    st.plotly_chart(fig1, use_container_width=True)
-    st.plotly_chart(fig2, use_container_width=True)
-    st.plotly_chart(fig3, use_container_width=True)
-
-    #st.markdown("#### Explore the influence of the sampling rate on the detection performance for selected appliance(s).")
-
-    # appliances2 = st.multiselect(
-    #     "Select devices:", devices_list_refit_ukdale,
-    # )
-
-    # fig_benchmark = plot_benchmark_figures4(appliances2, measure, dataset)
-    # st.plotly_chart(fig_benchmark, use_container_width=True)
-
 def plot_detection_score_for_dataset(df_res_bench, measure_detection):
     # Calculate the average Clf_F1_SCORE for each appliance (Case) across different seeds
-    average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
+    #average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
+    average_f1_score = df_res_bench.groupby(['Case']).max(numeric_only=True).reset_index()
 
     # Plotting the average Clf_F1_Score for each appliance
     fig = px.bar(average_f1_score, 
@@ -76,7 +45,8 @@ def plot_detection_score_for_dataset(df_res_bench, measure_detection):
 
 def plot_localization_score_for_dataset(df_res_bench, measure_localization):
     # Calculate the average Clf_F1_SCORE for each appliance (Case) across different seeds
-    average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
+    #average_f1_score = df_res_bench.loc[df_res_bench['WinTrainWeak']==10080]
+    average_f1_score = df_res_bench.groupby(['Case']).max(numeric_only=True).reset_index()
 
     # Plotting the average Clf_F1_Score for each appliance
     fig = px.bar(average_f1_score, 
@@ -111,7 +81,7 @@ def plot_influence_win_train(df_res_bench, measure_detection, measure_localizati
             go.Scatter(
                 x=win_df_clf['WinTrainWeak'], 
                 y=win_df_clf[f'Clf_{measure_detection}'], 
-                mode='lines', 
+                mode='lines+markers',
                 name=f'{app}',
                 legendgroup=f'{app}',  # Group by the same name to share color
                 marker_color=dict_color_appliance[app],
@@ -127,7 +97,7 @@ def plot_influence_win_train(df_res_bench, measure_detection, measure_localizati
             go.Scatter(
                 x=win_df_clf['WinTrainWeak'], 
                 y=win_df_clf[measure_localization], 
-                mode='lines', 
+                mode='lines+markers',
                 name=f'{app}',
                 legendgroup=f'{app}',  # Group by the same name to share color
                 marker_color=dict_color_appliance[app],
@@ -151,122 +121,6 @@ def plot_influence_win_train(df_res_bench, measure_detection, measure_localizati
 
     return fig
 
-def plot_benchmark_figures2(name_measure, dataset):
-    table = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
-    if dataset != 'All':
-        table = table.loc[table['Dataset'] == dataset]
-
-    dict_measure = {'Accuracy': 'Acc', 'Balanced Accuracy': 'Acc_Balanced', 'F1 Macro': 'F1_Macro'}
-    measure = dict_measure[name_measure]
-
-    table = table[['Appliance', 'Models']+[measure]].groupby(['Appliance', 'Models'], as_index=False).mean()
-
-    # Assuming grouped_df is your DataFrame after grouping and sorting
-    table = table.sort_values(['Models', 'Appliance'])
-
-    table['Appliance'] = table['Appliance'].astype('category')
-
-    min_val = table[measure].values.flatten().min()
-    # Create the grouped bar plot
-    fig = px.bar(table, 
-                x='Models', 
-                y=measure, labels={measure: name_measure},
-                color='Appliance',
-                color_discrete_map=dict_color_appliance,
-                barmode='group',
-                range_y=[min(0.5, round(min_val-0.1)), 1], 
-                height=400,
-                title='Models performance for each appliance for selected dataset')
-    
-    return fig
-
-
-def plot_benchmark_figures3(name_measure, dataset):
-    table = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
-    if dataset != 'All':
-        table = table.loc[table['Dataset'] == dataset]
-
-    dict_measure = {'Accuracy': 'Acc', 'Balanced Accuracy': 'Acc_Balanced', 'F1 Macro': 'F1_Macro'}
-    measure = dict_measure[name_measure]
-    
-    table = table[['SamplingRate', 'Models']+[measure]].groupby(['SamplingRate', 'Models'], as_index=False).mean()
-
-    table.replace('1T', '1min', inplace=True)
-    table.replace('10T', '10min', inplace=True)
-
-    sampling_order = ['30s', '1min', '10min']  # Define the logical order
-    table['SamplingRate_order'] = pd.Categorical(table['SamplingRate'], categories=sampling_order, ordered=True)
-
-    table = table.sort_values(['SamplingRate_order', 'Models'])
-
-    table['SamplingRate'] = table['SamplingRate'].astype('category')
-
-    dict_color_sp = {'30s': 'rgb(211, 211, 211)', '1min': 'rgb(128, 128, 128)', '10min': 'black'}
-
-    min_val = table[measure].values.flatten().min()
-
-    fig = px.bar(table, 
-                x='Models', 
-                y=measure, labels={measure: name_measure},
-                color='SamplingRate',
-                color_discrete_map=dict_color_sp,
-                barmode='group',
-                range_y=[min(0.5, round(min_val-0.1)), 1], 
-                height=400,
-                title='Models performance for each sampling rate for selected dataset')
-    
-    return fig
-
-
-def plot_benchmark_figures4(appliances, measure, dataset):
-    df = pd.read_csv(os.getcwd()+'/TableResults/Results.gzip', compression='gzip')
-    df.replace('1T', '1min', inplace=True)
-    df.replace('10T', '10min', inplace=True)
-    sampling_rates = df['SamplingRate'].unique()
-
-    if dataset != 'All':
-        df = df.loc[df['Dataset'] == dataset]
-
-    dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff'}
-    dict_measure = {'Accuracy': 'Acc', 'Balanced Accuracy': 'Acc_Balanced', 'F1 Macro': 'F1_Macro'}
-
-    # Create subplots: one column for each appliance, shared y-axis
-    fig = make_subplots(rows=1, cols=len(appliances), shared_yaxes=True, subplot_titles=[f"{appliance}" for appliance in appliances])
-
-    legend_added = []
-
-    added_models = set() 
-
-    for j, appliance in enumerate(appliances, start=1):
-        for model_name in ['ConvNet', 'ResNet', 'Inception', 'TransAppS']:
-            accuracies = [df[(df['Appliance'] == appliance) & (df['SamplingRate'] == sr) & (df['Models'] == model_name)][dict_measure[measure]].values[0] for sr in sampling_rates]
-
-            show_legend = model_name not in added_models  
-            added_models.add(model_name)  
-
-            fig.add_trace(go.Scatter(x=sampling_rates, y=accuracies, mode='lines+markers',
-                                    name=model_name, marker_color=dict_color_model[model_name],
-                                    marker=dict(size=10), showlegend=show_legend,
-                                    legendgroup=model_name),
-                          row=1, col=j)
-            
-            if show_legend:
-                legend_added.append(model_name)
-
-    # Update y-axes for each subplot to have the range [0, 1]
-    for j in range(1, len(appliances) + 1):
-        fig.update_yaxes(range=[0, 1.05], row=1, col=j)
-        fig.update_xaxes(title_text="Sampling Rate", row=1, col=j)
-
-    fig.update_layout(
-        title='Sampling rate influence on the detection performance of each classifier for selected appliance(s)',
-        xaxis_title="Sampling Rate",
-        yaxis_title=measure,
-        legend_title="Model",
-        font=dict(size=13)
-    )
-
-    return fig
 
 
 def get_dataset_name(ts_name):
@@ -314,7 +168,9 @@ def get_time_series_data(ts_name, length):
 @st.cache_data(ttl=3600, max_entries=1, show_spinner=True)
 def get_bench_results_nilm(dataset):
     # Load dataframe
-    df = pd.read_csv(os.getcwd()+f'/TableResults/{dataset}Results.gzip', compression='gzip')
+    df = pd.read_csv(os.getcwd()+f'/TableResults/{dataset}BenchNILMResults.gzip', compression='gzip')
+    df.replace('CRNNWeak', 'CRNN (Weak)', inplace=True)
+    df.replace('Unet-NILM', 'UNet-NILM', inplace=True)
 
     return df
 
@@ -440,22 +296,6 @@ def get_pred_nilmcam_one_appliance(dataset_name, window_agg, appliance):
     pred_prob, soft_label, soft_label_before_sig, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
 
     return {'pred_prob': pred_prob, 'pred_status': soft_label, 'soft_label_before_sig': soft_label_before_sig, 'avg_cam': avg_cam}
-
-
-def get_prediction_nilmbaselines_one_appliance(dataset_name, window_agg, appliance, model_list):
-
-    pred_dict = {}
-    for model_name in model_list:
-        if model_name=='NILMCAM':
-            path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/{model_name}/'
-            pred_prob, soft_label, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
-        else:
-            print('Not implemented')
-
-        # Update pred_dict
-        pred_dict[model_name] = {'pred_prob': pred_prob, 'pred_status': soft_label, 'avg_cam': avg_cam}
-
-    return pred_dict
 
 
 def pred_one_window_nilmcam(k, df, window_size, dataset_name, appliances):
@@ -642,9 +482,9 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_nilm_cam, pred
     list_row_heights = [0.3] + [0.7/8 for _ in range(8)]
 
     fig = make_subplots(rows=9, cols=1, 
-                        shared_xaxes=True, # vertical_spacing=0.1,
+                        shared_xaxes=True, #vertical_spacing=0.1
                         row_heights=list_row_heights,
-                        subplot_titles=['', f'{appliance} Status', 'NILM-CAM', 'CRNN (Weak)', 'BiGRU', 'UNet-NILM', 'TPNILM', 'TransNILM', 'CRNN'])
+                        subplot_titles=['', f'{appliance} Status', 'CamAL', 'CRNN (Weak)', 'BiGRU', 'UNet-NILM', 'TPNILM', 'TransNILM', 'CRNN'])
     
     # Aggregate plot
     fig.add_trace(go.Scatter(x=window_df.index, y=window_df['Aggregate'], 
@@ -742,14 +582,14 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_nilm_cam, pred
     else:
         yaxis_title_y = 0.22
 
-    yaxis_title_y = 0.4
+    yaxis_title_y = 0.515
         
     shared_yaxis_title = {
-        'text': "Model comparaison",  # Update with your desired title
+        'text': "Supervised                                                                                Weakly Supervised             Ground True",  # Update with your desired title
         'showarrow': False,
         'xref': 'paper',
         'yref': 'paper',
-        'x': -0.05,
+        'x': -0.1,
         'y':yaxis_title_y,
         'xanchor': 'center',
         'yanchor': 'middle',
@@ -765,26 +605,76 @@ def plot_one_window_benchmark(k, df, window_size, appliance, pred_nilm_cam, pred
     return fig
 
 
-def plot_nilm_performance_comparaison(df, dataset, appliance, metric):
-    df_case = df.loc[df['Case']==appliance].copy()
+# def plot_nilm_performance_comparaison(df, dataset, appliance, metric):
+#     df_case = df.loc[df['Case']==appliance].copy()
     
-    order = [f'{p}DataForTrain' for p in [0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 'AllPossible']] + ['All']
+#     order = [f'{p}DataForTrain' for p in [0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 'AllPossible']] + ['All']
+#     df_case['OrderPercDataTrain'] = pd.Categorical(df_case['PercDataTrain'], categories=order, ordered=True)
+#     df_case = df_case.sort_values(['Model', 'OrderPercDataTrain'])
+#     
+
+#     fig = px.scatter(df_case, 
+#                     x='NLabelTrain',
+#                     log_x=True,
+#                     y=metric, 
+#                     size='TrainingTime', 
+#                     color='Model', 
+#                     symbol='Model', 
+#                     title=f'{dict_measure_to_display[metric]} vs number of labels used for training by each Model.', 
+#                     labels={'Metric': dict_measure_to_display[metric], 'NLabelTrain': 'Number of Labels used for Training'},
+#                     hover_data=['Model', 'TrainingTime'])
+#     fig.update_traces(mode='markers+lines')
+
+#     return fig
+
+
+def plot_nilm_performance_comparaison(df, dataset, appliance, metric):
+    df_case = df.loc[df['Case'] == appliance].copy()
+    
+    # Define the order for categorical data
+    order = [f'{p}DataForTrain' for p in [0.025, 0.05, 0.1, 0.2, 0.3, 0.4 ,0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 'AllPossible']] + ['All']
     df_case['OrderPercDataTrain'] = pd.Categorical(df_case['PercDataTrain'], categories=order, ordered=True)
     df_case = df_case.sort_values(['Model', 'OrderPercDataTrain'])
+    df_case['TrainingTime'] = df_case['TrainingTime'].round(2)
+    df_case['TrainingTimeScaled'] = 10 + (df_case['TrainingTime'] / df_case['TrainingTime'].max()) * 20
 
-    fig = px.scatter(df_case, 
-                    x='NLabelTrain',
-                    log_x=True,
-                    y=metric, 
-                    size='TrainingTime', 
-                    color='Model', 
-                    symbol='Model', 
-                    title=f'{dict_measure_to_display[metric]} vs number of labels used for training by each Model.', 
-                    labels={'Metric': dict_measure_to_display[metric], 'NLabelTrain': 'Number of Labels used for Training'},
-                    hover_data=['Model', 'TrainingTime'])
-    fig.update_traces(mode='markers+lines')
+    # Create a scatter plot using Plotly graph_objects
+    fig = go.Figure()
+
+    # Group data by 'Model'
+    grouped = df_case.groupby('Model')
+
+    for model, group in grouped:
+        fig.add_trace(go.Scatter(
+            x=group['NLabelTrain'],
+            y=group[metric],
+            customdata=group[[metric, 'TrainingTime']].round(3),
+            mode='markers+lines',
+            legendgroup='Weakly Supervised' if (model=='CRNN (Weak)' or model=='CamAL') else 'Supervised',  # this can be any string, not just "group"
+            legendgrouptitle_text='Weakly Supervised' if (model=='CRNN (Weak)' or model=='CamAL') else 'Supervised',
+            marker=dict(size=group['TrainingTimeScaled'], opacity=0.6),
+            name=model,
+            line=dict(width=1),
+            text=group['TrainingTime'],
+            hovertemplate='<br>'.join([f'{dict_measure_to_display[metric]}:'+' %{customdata[0]}', 'TrainingTime: %{customdata[1]} Seconds'])
+            )
+        )
+
+    # Update layout settings
+    fig.update_layout(
+        title=f'{dict_measure_to_display[metric]} vs number of labels used for training by each approach',
+        xaxis=dict(
+            title='Number of Labels used for Training',
+            type='log'
+        ),
+        yaxis=dict(
+            title=dict_measure_to_display[metric]
+        ),
+    )
 
     return fig
+
+
 
 
 def plot_detection_probabilities(data):
@@ -797,12 +687,12 @@ def plot_detection_probabilities(data):
 
     for i, appliance in enumerate(appliances, start=1):
         appliance_data = data[appliance]
-        models = ['NILMCAM']
+        models = ['CamAL']
         probabilites = [appliance_data['pred_prob']]
-        color_model  = [dict_color_model['NILMCAM']]
+        #color_model  = [dict_color_model['NILMCAM']]
 
         # Add bars for each class in the subplot
-        fig.add_trace(go.Bar(x=models, y=probabilites,  marker_color=color_model), row=1, col=i)
+        fig.add_trace(go.Bar(x=models, y=probabilites,  marker_color='peachpuff'), row=1, col=i)
 
     for axis in fig.layout:
         if axis.startswith('yaxis'):
@@ -832,7 +722,6 @@ def plot_signatures(appliances):
     fig = make_subplots(rows=1, cols=len(appliances), subplot_titles=[f'{appliance}' for appliance in appliances], shared_yaxes=True)
 
     for i, appliance in enumerate(appliances, start=1):
-        print(appliance)
         signature = pd.read_csv(os.getcwd()+f'/Data/example_{appliance}.gzip', parse_dates=['Time'], compression='gzip').set_index('Time')
         signature = signature.resample('1min').mean()
 
@@ -845,7 +734,7 @@ def plot_signatures(appliances):
     for j in range(1, len(appliances) + 1):
         fig.update_xaxes(title_text="Time", row=1, col=j)
         
-    fig.update_layout(title='Example of signature for selected appliance(s)', 
+    fig.update_layout(title='Example of signature for different appliances', 
                       yaxis_title='Power (Watts)', 
                       showlegend=False,
                       height=400, 

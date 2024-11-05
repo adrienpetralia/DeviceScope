@@ -28,14 +28,18 @@ st.markdown(
     """
 )
 
-st.image("Figures/homepage_figure.png", caption="DeviceScope Appliance Localization")
-
 st.markdown(f"""
             1. **Explore** electricity consumption series.
             2. **Detect** and **Localize** appliances use in a period of time.
             3. **Compare** the performance of our approach against other methods.
             """)
 
+st.image("Figures/homepage_figure.png")
+
+
+st.markdown(f"""We propose DeviceScope as an interactive app to facilitate the visualization of smart meter consumption data using appliance detection localization methods. 
+            DeviceScope is based on **CamAL** *(**C**lass **A**ctivation **M**ap based **A**ppliance **L**ocalization)*, a novel weakly supervised method for appliance pattern localization which only requires the appliance's possession label for training.
+            """)
 
 st.markdown(text_info)
 

@@ -21,10 +21,8 @@ col1_1, col1_2, col1_3 = st.columns(3)
 
 with col1_1:
         dataset_name = st.selectbox(
-            "Choose a dataset", list_dataset, index=0
+            "Choose a dataset", list_dataset, index=1
         )
-
-dataset_name = 'IDEAL'
 
 with col1_2:
     measure_detection = st.selectbox(
@@ -42,7 +40,7 @@ measure_detection    = dict_measure[measure_detection]
 measure_localization = dict_measure[measure_localization]
 
 tab_playground, tab_benchmark = st.tabs(
-        ["NILM-CAM performances", "Comparaison with NILM approaches"]
+        ["CamAL performances", "Comparaison with NILM-based (SeqToSeq) approaches"]
     )
     
 with tab_playground:
@@ -73,14 +71,14 @@ with tab_benchmark:
         "Select an appliance:", dict_ts_device[dataset_name], index=0
     )
 
-
-    st.markdown("""### Applicance pattern localization performances compared to other approach according to the number of label used for training""")
+    st.markdown("""### CamAL performances compared to SotA NILM methods""")
+    st.markdown("Comparaison of CamAL to weakly and fully supervised NILM methods""")
     df_res = get_bench_results_nilm(dataset_name)
     fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, dataset_name, appliance_selected, measure_localization)
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 
-    st.markdown("""### Compare the results with NILM based model""")
+    st.markdown("""### Vizualise the results with NILM based model""")
 
     col3_1, col3_2 = st.columns(2)
 

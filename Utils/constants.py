@@ -6,7 +6,10 @@ Attempt to identify the appliances in the aggregate power by looking at the prov
 
 text_tab_benchmark = f"""
 # Benchmark
-Compare the performance of the classifiers applied to detecting appliances and see the influence of the sampling rate on the detection score."""
+Explore and compare the performance of our method. 
+
+First select a **Dataset**, a **Detection Metric**, to measure *if* an appliance is well detected in a given window, and a **Localization Metric**, to measure *when* the appliance is well localize.
+"""
 
 
 text_description_dataset  = f"""
@@ -100,15 +103,15 @@ Work supported by EDF R&D and ANRT French program.
 
 # ========================== Colors ========================== #
 dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'brown', 'Kettle': 'orange', 'Microwave': 'grey'}
-dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'NILMCAM': 'peachpuff'}
+#dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'CamAL': 'peachpuff'}
 dict_measure_to_display = { 'ACCURACY': 'Accuracy', 'BALANCED_ACCURACY': 'Balanced Accuracy', 'F1_SCORE': 'F1 Score', 'RECALL': 'Recall', 'PRECISION': 'Precision'}
 
 
 # ========================== Lists ========================== #
 lengths_list   = ['6 hours', '12 hours', '1 Day']
 
-devices_list_refit_ukdale = ['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle']
-devices_list_ideal        = ['WashingMachine', 'Dishwasher', 'Shower']
+devices_list_refit_ukdale = ['Kettle', 'Dishwasher', 'WashingMachine', 'Microwave']
+devices_list_ideal        = ['Dishwasher', 'Shower', 'WashingMachine']
 
 measures_list  = ['Accuracy', 'Balanced Accuracy', 'F1 Score', 'Precision', 'Recall']
 
