@@ -109,14 +109,14 @@ def plot_influence_win_train(df_res_bench, measure_detection, measure_localizati
     # Update the layout of the figure
     fig.update_layout(
         height=400,  # Adjust the height based on the number of rows (each appliance gets two columns)
-        title=f'Accuracy vs WinTrainWeak for Different Appliances (Detection and Classification)',
+        title=f'Accuracy vs legnth of the window used for training',
         showlegend=True
     )
 
     # Update axes titles for all subplots
-    fig.update_xaxes(title_text="Length of window used for training", row=1, col=1)
+    fig.update_xaxes(title_text="Window length used for training", row=1, col=1)
     fig.update_yaxes(title_text=f'Detection {dict_measure_to_display[measure_detection]}', row=1, col=1)
-    fig.update_xaxes(title_text="Length of window used for training", row=1, col=2)
+    fig.update_xaxes(title_text="Window length used for training", row=1, col=2)
     fig.update_yaxes(title_text=f'Localization {dict_measure_to_display[measure_detection]}', row=1, col=2)
 
     return fig
@@ -658,7 +658,7 @@ def plot_nilm_performance_comparaison(df, dataset, appliance, metric):
         fig.add_trace(go.Scatter(
             x=group['NLabelTrain'],
             y=group[metric],
-            customdata=group[[metric, 'TrainingTime']].round(3),
+            customdata=group[[metric, 'NLabelTrain', 'TrainingTime']].round(3),
             mode='markers+lines',
             legendgroup='Weakly Supervised' if (model=='CRNN (Weak)' or model=='CamAL') else 'Supervised',  # this can be any string, not just "group"
             legendgrouptitle_text='Weakly Supervised' if (model=='CRNN (Weak)' or model=='CamAL') else 'Supervised',
@@ -666,7 +666,9 @@ def plot_nilm_performance_comparaison(df, dataset, appliance, metric):
             name=model,
             line=dict(width=1),
             text=group['TrainingTime'],
-            hovertemplate='<br>'.join([f'{dict_measure_to_display[metric]}:'+' %{customdata[0]}', 'TrainingTime: %{customdata[1]} Seconds'])
+            hovertemplate='<br>'.join([f'{dict_measure_to_display[metric]}:'+' %{customdata[0]}', 
+                                       f'Number of label:'+' %{customdata[1]}', 
+                                       'TrainingTime: %{customdata[2]} Seconds'])
             )
         )
 

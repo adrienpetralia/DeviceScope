@@ -40,7 +40,7 @@ measure_detection    = dict_measure[measure_detection]
 measure_localization = dict_measure[measure_localization]
 
 tab_comparaison_with_nilm, tab_camal_performances = st.tabs(
-        ["CamAL performances", "Comparaison with NILM-based (SeqToSeq) approaches"]
+        ["Comparison with SotA NILM approach", "CamAL performance"]
     )
     
 with tab_comparaison_with_nilm:
@@ -53,13 +53,14 @@ with tab_comparaison_with_nilm:
     )
 
     st.markdown("""### CamAL performance VS SotA NILM methods""")
-    st.markdown("Comparaison of CamAL to weakly and fully supervised NILM methods""")
+    st.markdown("""On this tab, you can interactively compare the performance of CamAL against SotA methods proposed for appliance detection. First, take a look at the **performances** (for the chosen metric) according to the number of labels used for training the methods. Then, **compare visually** the prediction of each baseline for the select dataset and appliance. Don't forget that **CamAL** (as well as the weak version of the CRNN) used only **one label** per window for training (one label per house for our method on the IDEAL dataset), whereas all the other baselines used **one label per timestamp**!""")
+    st.markdown("##### 1. Accuracy vs Number of label used for training""")
     df_res = get_bench_results_nilm(dataset_name)
     fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, dataset_name, appliance_selected, measure_localization)
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 
-    st.markdown("""### Vizualise the results with NILM based model""")
+    st.markdown("""##### 2. Compare visually the prediction of the different approaches""")
 
     col3_1, col3_2 = st.columns(2)
 
@@ -111,10 +112,12 @@ with tab_comparaison_with_nilm:
 
 with tab_camal_performances:
     st.markdown("### CamAL performance")
+    st.markdown("""On this tab, you can interactively explore CamAL's performance for the different datasets. First, take a look at the detection and localization scores for the different appliances. Then, notice the influence of the window length (that plays a role in the number of labels available for training) on the performance!""")
+    
 
     df_res_bench = get_bench_results(dataset_name)
 
-    st.markdown("Detection and localization score for the appliances")
+    st.markdown("##### 1. Detection and localization score")
 
     fig_bench_detection    = plot_detection_score_for_dataset(df_res_bench, measure_detection)
     st.plotly_chart(fig_bench_detection, use_container_width=True)
@@ -122,7 +125,7 @@ with tab_camal_performances:
     fig_bench_localization = plot_localization_score_for_dataset(df_res_bench, measure_localization)
     st.plotly_chart(fig_bench_localization, use_container_width=True)
 
-    st.markdown("Influence of the window length used for training by CamAL")
+    st.markdown("##### 2. Influence of the window length on the performance")
 
     fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
 
