@@ -13,7 +13,7 @@ col1_1, col1_2 = st.columns(2)
 
 with col1_1:
     dataset_name = st.selectbox(
-        "Choose a load curve", list_dataset, index=0
+        "Select a dataset", list_dataset, index=0
     )
 
 with col1_2:
@@ -26,14 +26,14 @@ with col1_2:
     else:
         raise ValueError('Wrong dataset name.')
     ts_name = st.selectbox(
-        "Choose a load curve", list_name_ts, index=0
+        "Select a series", list_name_ts, index=0
     )
 
 col2_1, col2_2 = st.columns(2)
 
 with col2_1:
     length = st.selectbox(
-        "Choose the window length:", lengths_list, index=2
+        "Select a window length:", lengths_list, index=2
     )
 with col2_2:
     dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
@@ -41,7 +41,7 @@ with col2_2:
                           'IDEAL': devices_list_ideal}
     
     appliances_selected = st.multiselect(
-        "Choose devices:", dict_ts_device[dataset_name],
+        "Select appliance(s):", dict_ts_device[dataset_name],
     )
 
     

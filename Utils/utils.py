@@ -67,7 +67,7 @@ def plot_influence_win_train(df_res_bench, measure_detection, measure_localizati
     # Create a subplot figure with two columns and one row for each appliance
     fig = make_subplots(
         rows=1, cols=2, 
-        horizontal_spacing=0.1
+        horizontal_spacing=0.2
     )
 
     # Loop through each appliance and add its corresponding subplots
@@ -114,10 +114,10 @@ def plot_influence_win_train(df_res_bench, measure_detection, measure_localizati
     )
 
     # Update axes titles for all subplots
-    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=1)
-    fig.update_yaxes(title_text=f'Clf_{measure_detection}', row=1, col=1)
-    fig.update_xaxes(title_text="WinTrainWeak", row=1, col=2)
-    fig.update_yaxes(title_text=f'{measure_localization}', row=1, col=2)
+    fig.update_xaxes(title_text="Length of window used for training", row=1, col=1)
+    fig.update_yaxes(title_text=f'Detection {dict_measure_to_display[measure_detection]}', row=1, col=1)
+    fig.update_xaxes(title_text="Length of window used for training", row=1, col=2)
+    fig.update_yaxes(title_text=f'Localization {dict_measure_to_display[measure_detection]}', row=1, col=2)
 
     return fig
 
@@ -170,6 +170,7 @@ def get_bench_results_nilm(dataset):
     # Load dataframe
     df = pd.read_csv(os.getcwd()+f'/TableResults/{dataset}BenchNILMResults.gzip', compression='gzip')
     df.replace('CRNNWeak', 'CRNN (Weak)', inplace=True)
+    df.replace('CRNNStrong', 'CRNN', inplace=True)
     df.replace('Unet-NILM', 'UNet-NILM', inplace=True)
 
     return df
@@ -294,6 +295,14 @@ def get_pred_nilmcam_one_appliance(dataset_name, window_agg, appliance):
 
     path_ensemble = os.getcwd()+f'/TrainedModels/{dataset_name}/1min/{appliance}/ResNetEnsemble/'
     pred_prob, soft_label, soft_label_before_sig, avg_cam = get_soft_label_ensemble(window_agg, path_ensemble)
+    
+    if appliance=='Microwave':
+        soft_label = sigmoid(np.array(soft_label_before_sig))
+        soft_label = np.where(soft_label > 0.2, 1, 0)
+
+    elif appliance=='WashingMachine':
+        soft_label = sigmoid(np.array(soft_label_before_sig))
+        soft_label = np.where(soft_label > 0.2, 1, 0)
 
     return {'pred_prob': pred_prob, 'pred_status': soft_label, 'soft_label_before_sig': soft_label_before_sig, 'avg_cam': avg_cam}
 
@@ -357,6 +366,7 @@ def plot_one_window_playground(k, df, window_size, appliances, pred_dict_all_app
         pred_dict_app = pred_dict_all_appliance[appl]
 
         #if label_to_display=='status':
+        # pred_nilmcam_app = pred_dict_app['soft_label_before_sig']
         pred_nilmcam_app = pred_dict_app['pred_status']
         
         fig_agg.add_trace(go.Scatter(x=window_df.index, y=pred_nilmcam_app, mode='lines', showlegend=False, name=appl.capitalize(), marker_color=dict_color_appliance[appl], fill='tozeroy'), row=1+z, col=1)
@@ -737,9 +747,9 @@ def plot_signatures(appliances):
     fig.update_layout(title='Example of signature for different appliances', 
                       yaxis_title='Power (Watts)', 
                       showlegend=False,
-                      height=400, 
+                      height=300, 
                       margin=dict(l=100, r=30, t=70, b=40),
-                      yaxis_range=[0, 10000]
+                      yaxis_range=[0, 10000 if 'Shower' in appliances else 6000]
                     )
 
     return fig

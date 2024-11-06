@@ -21,12 +21,12 @@ col1_1, col1_2, col1_3 = st.columns(3)
 
 with col1_1:
         dataset_name = st.selectbox(
-            "Choose a dataset", list_dataset, index=1
+            "Choose a dataset", list_dataset, index=0
         )
 
 with col1_2:
     measure_detection = st.selectbox(
-        "Choose a detection measure:", measures_list, index=0
+        "Choose a detection measure:", measures_list, index=1
     )
 
 with col1_3:
@@ -44,15 +44,19 @@ tab_playground, tab_benchmark = st.tabs(
     )
     
 with tab_playground:
-    st.markdown("### Appliance detection performance comparaison")
+    st.markdown("### CamAL performance")
 
     df_res_bench = get_bench_results(dataset_name)
+
+    st.markdown("Detection and localization score for the appliances")
 
     fig_bench_detection    = plot_detection_score_for_dataset(df_res_bench, measure_detection)
     st.plotly_chart(fig_bench_detection, use_container_width=True)
 
     fig_bench_localization = plot_localization_score_for_dataset(df_res_bench, measure_localization)
     st.plotly_chart(fig_bench_localization, use_container_width=True)
+
+    st.markdown("Influence of the window length used for training by CamAL")
 
     fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
 
@@ -71,7 +75,7 @@ with tab_benchmark:
         "Select an appliance:", dict_ts_device[dataset_name], index=0
     )
 
-    st.markdown("""### CamAL performances compared to SotA NILM methods""")
+    st.markdown("""### CamAL performance VS SotA NILM methods""")
     st.markdown("Comparaison of CamAL to weakly and fully supervised NILM methods""")
     df_res = get_bench_results_nilm(dataset_name)
     fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, dataset_name, appliance_selected, measure_localization)

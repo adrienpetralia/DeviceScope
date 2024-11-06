@@ -71,14 +71,16 @@ where $w_k$ are the weights of the $k^{th}$ filter associated to class $c$, and 
 It results in a univariate time series where each element (at the timestamp $t  \in [1, T ]$) equals the weighted sum of the data points at $t$, with the weights learned by the neural network and reflect the importance of each timestamp.
 """
 
-text_about = f"""
+text_intro_whats_behind = f"""
 ## Interactive detection and localization of appliance patterns in electricity consumption time series
 
 Electricity suppliers have installed millions of smart meters worldwide to improve the management of the smart grid system.
 These meters capture detailed time-stamped electricity consumption of the total main power consumed in a house: this recorded signal is hard to analyze as it regroups multiple appliance signatures that run simultaneously.
 Making non-expert users (as consumers or sales advisors) understand it has become a major challenge for electricity suppliers.
 We propose Deviscope as an interactive solution to facilitate the understanding of electrical data by detecting and localizing individual appliance patterns within recorded time periods.
+"""
 
+text_camal_info = f"""
 ### How DeviceScope works?
 The core of our system is based on a combination of recent works conducted on appliance detection [[1](https://arxiv.org/abs/2305.10352), [2](https://arxiv.org/abs/2401.05381)] and explainable classification [[3](https://arxiv.org/abs/1611.06455), [4](https://helios2.mi.parisdescartes.fr/~themisp/dCAM/), [5](https://epfml.github.io/attention-cnn/)].
 In a nutshell, DeviceScope uses a trained time series classifier to detect ***if*** an appliance is used in a given period of time. If this is the case, a explainable classification approach is applied to detect ***when*** the device is running. 
