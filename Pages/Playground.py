@@ -101,6 +101,7 @@ else:
     fig_ts = plot_one_window_agg(st.session_state.CURRENT_WINDOW, df, window_size)
     st.plotly_chart(fig_ts, use_container_width=True)
 
-    # Plot examples for all possible appliances
-    fig_sig = plot_signatures(['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle', 'Shower'])
-    st.plotly_chart(fig_sig, use_container_width=True)
+    with st.expander(f"""### Example of signature for different appliances"""):
+        # Plot examples for all possible appliances
+        fig_sig = plot_signatures(['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle', 'Shower'])
+        st.plotly_chart(fig_sig, use_container_width=True)

@@ -39,34 +39,11 @@ dict_measure = {'Accuracy': 'ACCURACY', 'Balanced Accuracy': 'BALANCED_ACCURACY'
 measure_detection    = dict_measure[measure_detection]
 measure_localization = dict_measure[measure_localization]
 
-tab_playground, tab_benchmark = st.tabs(
+tab_comparaison_with_nilm, tab_camal_performances = st.tabs(
         ["CamAL performances", "Comparaison with NILM-based (SeqToSeq) approaches"]
     )
     
-with tab_playground:
-    st.markdown("### CamAL performance")
-
-    df_res_bench = get_bench_results(dataset_name)
-
-    st.markdown("Detection and localization score for the appliances")
-
-    fig_bench_detection    = plot_detection_score_for_dataset(df_res_bench, measure_detection)
-    st.plotly_chart(fig_bench_detection, use_container_width=True)
-
-    fig_bench_localization = plot_localization_score_for_dataset(df_res_bench, measure_localization)
-    st.plotly_chart(fig_bench_localization, use_container_width=True)
-
-    st.markdown("Influence of the window length used for training by CamAL")
-
-    fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
-
-    st.plotly_chart(fig_influence_win_train, use_container_width=True)
-
-
-
-
-with tab_benchmark:
-
+with tab_comparaison_with_nilm:
     dict_ts_device = {'UKDALE': devices_list_refit_ukdale,
                       'REFIT': devices_list_refit_ukdale,
                       'IDEAL': devices_list_ideal}
@@ -130,3 +107,23 @@ with tab_benchmark:
     pred_nilmcam         = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, dataset_name, [appliance_selected])[appliance_selected]
     fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam, pred_prob_flag)
     st.plotly_chart(fig_visu_comparaison, use_container_width=True)
+
+
+with tab_camal_performances:
+    st.markdown("### CamAL performance")
+
+    df_res_bench = get_bench_results(dataset_name)
+
+    st.markdown("Detection and localization score for the appliances")
+
+    fig_bench_detection    = plot_detection_score_for_dataset(df_res_bench, measure_detection)
+    st.plotly_chart(fig_bench_detection, use_container_width=True)
+
+    fig_bench_localization = plot_localization_score_for_dataset(df_res_bench, measure_localization)
+    st.plotly_chart(fig_bench_localization, use_container_width=True)
+
+    st.markdown("Influence of the window length used for training by CamAL")
+
+    fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
+
+    st.plotly_chart(fig_influence_win_train, use_container_width=True)

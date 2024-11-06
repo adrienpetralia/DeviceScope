@@ -57,9 +57,8 @@ As the architecture was originally proposed for detecting appliances in large da
 text_description_explainability = r"""
 Identifying the discriminative features that influence a classifier's decision-making process has been extensively studied in the literature.
 For classification using deep-learning-based algorithms, different methods have been proposed to highlight the parts of an input instance that contribute the most to the final decision of the classifier.
-We investigate two of them for our system, which are related to the type of architecture used (CNN or Transformer).
 
-**Class Activation Map:** Originally proposed for explaining the decision-making process of deep-learning classifier in computer vision, the Class Activation Map (CAM)enables the highlighting of the parts of an image that contributed the most to obtaining the predicted label. 
+**Class Activation Map:** Originally proposed for explaining the decision-making process of deep-learning classifier in computer vision, the Class Activation Map (CAM) enables the highlighting of the parts of an image that contributed the most to obtaining the predicted label. 
 A one-dimensional adaptation of this method was proposed for time series classification to highlight the relevant subsequences of a time series.
 Note that CAM is only usable with CNN-based architectures incorporating a GAP layer before the softmax classifier.
 For univariate time series as load curves, the CAM for the label $c$ is defined as follows:
