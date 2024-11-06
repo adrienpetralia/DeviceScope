@@ -22,7 +22,7 @@ with col1_2:
     elif dataset_name=='REFIT':
         list_name_ts = list_refit_ts
     elif dataset_name=='IDEAL':
-        list_name_ts = list_ukdale_ts
+        list_name_ts = list_ideal_ts
     else:
         raise ValueError('Wrong dataset name.')
     ts_name = st.selectbox(
@@ -41,7 +41,7 @@ with col2_2:
                           'IDEAL': devices_list_ideal}
     
     appliances_selected = st.multiselect(
-        "Select appliance(s):", dict_ts_device[dataset_name],
+        "Choose the appliance(s) you wish to detect:", dict_ts_device[dataset_name],
     )
 
     
