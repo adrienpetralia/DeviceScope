@@ -7,7 +7,7 @@
 
 <div align="center">
 <p>
-<img alt="GitHub" src="https://img.shields.io/github/license/boniolp/whichdevice"> <img alt="GitHub issues" src="https://img.shields.io/github/issues/boniolp/whichdevice">
+<img alt="GitHub" src="https://img.shields.io/github/license/adrienpetralia/DeviceScope"> <img alt="GitHub issues" src="https://img.shields.io/github/issues/adrienpetralia/DeviceScope">
 </p>
 </div>
 
