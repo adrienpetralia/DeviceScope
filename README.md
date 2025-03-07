@@ -5,12 +5,6 @@
 
 <h2 align="center">An interactive tool to browse, detect and localize appliance patterns in electricity consumption time series</h2>
 
-<div align="center">
-<p>
-<img alt="GitHub" src="https://img.shields.io/github/license/adrienpetralia/DeviceScope"> <img alt="GitHub issues" src="https://img.shields.io/github/issues/adrienpetralia/DeviceScope">
-</p>
-</div>
-
 <p align="center"><a href="https://devicescope.streamlit.app/">Try our demo</a></p>
 <p align="center">
 <img width="400" src="./Figures/deviceScope_demo.gif"/>
