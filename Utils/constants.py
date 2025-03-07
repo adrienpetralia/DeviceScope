@@ -175,7 +175,15 @@ Work supported by EDF R&D and ANRT French program.
 
 # ========================== Colors ========================== #
 dict_color_appliance = {'WashingMachine': 'teal', 'Dishwasher': 'skyblue', 'Shower': 'brown', 'Kettle': 'orange', 'Microwave': 'grey'}
-#dict_color_model = {'ConvNet': 'wheat', 'ResNet': 'coral', 'Inception': 'powderblue', 'TransAppS': 'indianred', 'Ensemble': 'peachpuff', 'CamAL': 'peachpuff'}
+dict_color_model = {
+    'BiGRU': 'grey', 
+    'TPNILM': 'sandybrown', 
+    'TransNILM': 'mediumseagreen', 
+    'UNet-NILM': 'powderblue', 
+    'CamAL': 'indianred', 
+    'CRNN (Weak)': 'peachpuff', 
+    'CRNN': 'lightgrey'
+}
 dict_measure_to_display = { 'ACCURACY': 'Accuracy', 'BALANCED_ACCURACY': 'Balanced Accuracy', 'F1_SCORE': 'F1 Score', 'RECALL': 'Recall', 'PRECISION': 'Precision'}
 
 

@@ -57,6 +57,7 @@ with tab_comparaison_with_nilm:
     st.markdown("##### 1. Accuracy vs Number of label used for training""")
     df_res = get_bench_results_nilm(dataset_name)
     fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, dataset_name, appliance_selected, measure_localization)
+    #fig_perf_comparaison = plot_nilm_performance_comparaison_trainingtime_vs_accuracy(df_res, dataset_name, appliance_selected, measure_localization)
     st.plotly_chart(fig_perf_comparaison, use_container_width=True)
 
 

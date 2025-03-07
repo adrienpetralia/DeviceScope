@@ -8,7 +8,8 @@
 import streamlit as st
 
 from Utils.utils import *
-from Utils.constants import *
+#from Utils.constants import *
+from Helpers.texts_whatsbehind import *
 
 
 st.markdown(text_intro_whats_behind)
