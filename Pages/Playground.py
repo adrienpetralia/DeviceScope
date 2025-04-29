@@ -2,6 +2,14 @@ import streamlit as st
 
 from Utils.utils import *
 from Utils.constants import *
+
+config = {
+  'toImageButtonOptions': {
+    'format': 'svg', # one of png, svg, jpeg, webp
+    'filename': 'image',
+    'scale': 1
+  }
+}
     
 # Use session state to store CURRENT_WINDOW to persist across user interactions
 if 'CURRENT_WINDOW' not in st.session_state:
@@ -81,27 +89,27 @@ if len(appliances_selected) > 0:
     tab_ts, tab_app = st.tabs(["Aggregated", "Per device"])
     
     with tab_ts:
-        st.plotly_chart(fig_ts, use_container_width=True)
+        st.plotly_chart(fig_ts, use_container_width=True, config=config)
     
     with tab_app:
-        st.plotly_chart(fig_app, use_container_width=True)
+        st.plotly_chart(fig_app, use_container_width=True, config=config)
 
     tab_prob, tab_signatures = st.tabs(["Models detection probabilities", "Examples of appliance patterns"])
 
     with tab_prob:
         fig_prob = plot_detection_probabilities(pred_dict_all_app)
-        st.plotly_chart(fig_prob, use_container_width=True)
+        st.plotly_chart(fig_prob, use_container_width=True, config=config)
 
     with tab_signatures:
         fig_sig = plot_signatures(appliances_selected)
-        st.plotly_chart(fig_sig, use_container_width=True)
+        st.plotly_chart(fig_sig, use_container_width=True, config=config)
 
 
 else:
     fig_ts = plot_one_window_agg(st.session_state.CURRENT_WINDOW, df, window_size)
-    st.plotly_chart(fig_ts, use_container_width=True)
+    st.plotly_chart(fig_ts, use_container_width=True, config=config)
 
     with st.expander(f"""### Example of signature for different appliances"""):
         # Plot examples for all possible appliances
         fig_sig = plot_signatures(['WashingMachine', 'Dishwasher', 'Microwave', 'Kettle', 'Shower'])
-        st.plotly_chart(fig_sig, use_container_width=True)
+        st.plotly_chart(fig_sig, use_container_width=True, config=config)

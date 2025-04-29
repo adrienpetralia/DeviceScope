@@ -1,3 +1,5 @@
+HPCResults/
 *.ipynb
 *.pyc
+*.csv
 **/__pycache__/

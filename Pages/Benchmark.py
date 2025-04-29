@@ -11,6 +11,14 @@ import streamlit as st
 from Utils.utils import *
 from Utils.constants import *
 
+config = {
+  'toImageButtonOptions': {
+    'format': 'svg', # one of png, svg, jpeg, webp
+    'filename': 'image',
+    'scale': 1
+  }
+}
+
 # Use session state to store CURRENT_WINDOW_BENCHMARK to persist across user interactions
 if 'CURRENT_WINDOW_BENCHMARK' not in st.session_state:
     st.session_state.CURRENT_WINDOW_BENCHMARK = 0
@@ -58,7 +66,7 @@ with tab_comparaison_with_nilm:
     df_res = get_bench_results_nilm(dataset_name)
     fig_perf_comparaison = plot_nilm_performance_comparaison(df_res, dataset_name, appliance_selected, measure_localization)
     #fig_perf_comparaison = plot_nilm_performance_comparaison_trainingtime_vs_accuracy(df_res, dataset_name, appliance_selected, measure_localization)
-    st.plotly_chart(fig_perf_comparaison, use_container_width=True)
+    st.plotly_chart(fig_perf_comparaison, use_container_width=True, config=config)
 
 
     st.markdown("""##### 2. Compare visually the prediction of the different approaches""")
@@ -108,7 +116,7 @@ with tab_comparaison_with_nilm:
     
     pred_nilmcam         = pred_one_window_nilmcam(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, dataset_name, [appliance_selected])[appliance_selected]
     fig_visu_comparaison = plot_one_window_benchmark(st.session_state.CURRENT_WINDOW_BENCHMARK, df, window_size, appliance_selected, pred_nilmcam, pred_prob_flag)
-    st.plotly_chart(fig_visu_comparaison, use_container_width=True)
+    st.plotly_chart(fig_visu_comparaison, use_container_width=True, config=config)
 
 
 with tab_camal_performances:
@@ -121,13 +129,13 @@ with tab_camal_performances:
     st.markdown("##### 1. Detection and localization score")
 
     fig_bench_detection    = plot_detection_score_for_dataset(df_res_bench, measure_detection)
-    st.plotly_chart(fig_bench_detection, use_container_width=True)
+    st.plotly_chart(fig_bench_detection, use_container_width=True, config=config)
 
     fig_bench_localization = plot_localization_score_for_dataset(df_res_bench, measure_localization)
-    st.plotly_chart(fig_bench_localization, use_container_width=True)
+    st.plotly_chart(fig_bench_localization, use_container_width=True, config=config)
 
     st.markdown("##### 2. Influence of the window length on the performance")
 
     fig_influence_win_train =  plot_influence_win_train(df_res_bench, measure_detection, measure_localization)
 
-    st.plotly_chart(fig_influence_win_train, use_container_width=True)
+    st.plotly_chart(fig_influence_win_train, use_container_width=True, config=config)
